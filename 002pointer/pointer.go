@@ -181,6 +181,12 @@ func main() {
 
 	utils.Bao(1)
 
+	res1,res2 := getSumAndSub(5,3)
+	fmt.Println(res1)
+	fmt.Println(res2)
+	res3 := recursion(5)
+	fmt.Println(res3)
+
 	//斐波纳契数
 	fmt.Println("fbn(5)=", fbn(5))
 	//猴子吃桃子
@@ -240,6 +246,23 @@ func main() {
 	fmt.Println("add(2)累加--", add(2))
 	fmt.Println("add(3)累加--", add(3))
 
+}
+
+
+
+//返回多参数，  这个函数体不能写到main的主函数体中
+func getSumAndSub(n1 int, n2 int) (int, int) {
+	sum:=n1+n2
+	sub:=n1-n2
+	return sum, sub
+}
+
+//递归
+func recursion(arg int) int {
+	if arg ==1{
+		return arg
+	}
+	return arg * recursion(arg -1 )
 }
 
 //斐波纳契数 1,1,2,3,5...
@@ -305,3 +328,5 @@ func addUpper() func(int) int { //注意要返回一个函数
 		return i
 	}
 }
+
+
