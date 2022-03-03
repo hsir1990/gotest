@@ -109,15 +109,15 @@ func main() {
 	inter1 = int6
 	switch i := inter1.(type) {
 	case nil:
-		fmt.Println("x的类型~:%T", i)
+		fmt.Printf("x的类型~:%T \n", i)
 	case int:
-		fmt.Println("x的类型是：int")
+		fmt.Println("x的类型是:int")
 	case float64:
-		fmt.Println("x的类型是：float64")
+		fmt.Println("x的类型是:float64")
 	case func(int) float64:
-		fmt.Println("x的类型是：func(int)")
+		fmt.Println("x的类型是:func(int)")
 	case bool, string:
-		fmt.Println("x的类型是：bool或string")
+		fmt.Println("x的类型是:bool或string")
 	default:
 		fmt.Println("x的类型是未知")
 
@@ -181,7 +181,7 @@ func main() {
 
 	utils.Bao(1)
 
-	res1,res2 := getSumAndSub(5,3)
+	res1, res2 := getSumAndSub(5, 3)
 	fmt.Println(res1)
 	fmt.Println(res2)
 	res3 := recursion(5)
@@ -248,21 +248,19 @@ func main() {
 
 }
 
-
-
 //返回多参数，  这个函数体不能写到main的主函数体中
 func getSumAndSub(n1 int, n2 int) (int, int) {
-	sum:=n1+n2
-	sub:=n1-n2
+	sum := n1 + n2
+	sub := n1 - n2
 	return sum, sub
 }
 
 //递归
 func recursion(arg int) int {
-	if arg ==1{
+	if arg == 1 {
 		return arg
 	}
-	return arg * recursion(arg -1 )
+	return arg * recursion(arg-1)
 }
 
 //斐波纳契数 1,1,2,3,5...
@@ -328,5 +326,3 @@ func addUpper() func(int) int { //注意要返回一个函数
 		return i
 	}
 }
-
-
