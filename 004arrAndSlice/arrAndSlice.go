@@ -1,7 +1,7 @@
 /*
  * @Author: Hsir
  * @Date: 2022-03-04 14:24:55
- * @LastEditTime: 2022-03-04 18:13:30
+ * @LastEditTime: 2022-03-04 18:19:40
  * @LastEditors: Do not edit
  * @Description: In User Settings Edit
  */
@@ -123,10 +123,11 @@ func main() {
 	BubbleSort(&int7)
 }
 
+//冒泡
 func BubbleSort(arr *[5]int) {
 	temp := 0
-	for i := 0; i < len(arr); i++ {
-		for j := i; j < len(arr); j++ {
+	for i := 0; i < len(*arr)-1; i++ {
+		for j := i; j < len(*arr)-1-i; j++ {
 			if (*arr)[j] > (*arr)[j+1] {
 				temp = (*arr)[j]
 				(*arr)[j] = (*arr)[j+1]
