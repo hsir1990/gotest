@@ -121,6 +121,63 @@ func main() {
 
 	var int7 [5]int = [5]int{11, 3, 7, 9, 7}
 	BubbleSort(&int7)
+
+
+	//定义声明二维数组
+	var arr7 [3][6]int
+	arr7[1][2] = 1
+	arr7[2][3] =2
+	fmt.Println("arr7==",arr7)
+
+	//另外一种初始化二位数组
+	var arr8 [2][3]int = [2][3]int{{1,2,3},{4,5,6}}
+	fmt.Println("arr8=",arr8)
+
+	//4种方式
+	// var arr8 [2][3]int = [2][3]int{{1,2,3},{4,5,6}}
+	// var arr8 [2][3]int = [...][3]int{{1,2,3},{4,5,6}}
+	// var arr8 = [2][3]int{{1,2,3},{4,5,6}}
+	// var arr8 = [...][3]int{{1,2,3},{4,5,6}}
+
+	//map 是key-value的数据结构，又称为字段或者关联数组
+	//其中key可以很多种类型，比如 bool ，数字，string，指针，channel ，
+	//还可以是只包含前面几个类型的接口，结构体，数组
+	//通常为 int 和 string
+	// 注意 slice ，map还有function不可以，因为这几个没法用 == 来判断
+	//value和key能用的类型基本上一样
+
+	// map声明的举例
+	//var a map[int]string
+	//var a map[string]map[string]int
+
+	// 声明是不会分配内存的，初始化需要make，分配内存后才能赋值和使用
+	//方式一
+	var a map[string]string
+	a = make(map[string]string,10)//make的作用是给map分配数据空间
+	a["no1"] = "松江"
+	a["no2"] = "武松"
+	a["no1"] = "无用" //不能重复，出现重复，会以最后一个为主
+	a["no3"] = "鲁智深"
+	fmt.Println(a)
+	//map中没有顺序可言
+	//方式二
+	map1 := make(map[string]string)
+	map1["no1"] = "北京"
+	map1["no2"] = "天津"
+	map1["no3"] = "上海"
+	fmt.Println(map1)
+	//方式三
+	var map2 map[string]string = map[string]string{
+		"no1":"松江",
+		"no2":"武松",
+		"no3":"鲁智深",
+	}
+	//可添加
+	map2["no4"] = "无用"
+	fmt.Println(map2)
+
+
+
 }
 
 //冒泡
