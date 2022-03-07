@@ -23,6 +23,6 @@ func NewStudent(n string, a int) *student {
 }
 
 //如果age字段小写，我们也提供一个方法
-func (s *student) getAge() int {
+func (s *student) GetAge() int {
 	return s.age
 }

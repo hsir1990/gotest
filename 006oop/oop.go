@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"text/util"
+	utilmain "text/util"
 	// utils "text/util"
 )
 
@@ -10,9 +10,9 @@ import (
 //使用工厂模式实现夸包创建结构体实例（变量）
 func main() {
 	//工厂模式  go的结构体没有构造函数，通常可以使用工厂模式来解决问题
-	var stu = utilmain.NewStudent("tom-",18)
+	var stu = utilmain.NewStudent("tom-", 18)
 	fmt.Println(*stu)
-	fmt.Println("name=",stu.Name,"age=",utilmain.getAge())
-	
+	fmt.Println("name=", stu.Name, "age=", stu.GetAge())
+
 	fmt.Println("dayin")
 }
