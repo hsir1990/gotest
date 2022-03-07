@@ -1,7 +1,7 @@
 /*
  * @Author: Hsir
  * @Date: 2022-03-04 14:24:55
- * @LastEditTime: 2022-03-04 18:19:40
+ * @LastEditTime: 2022-03-07 10:26:54
  * @LastEditors: Do not edit
  * @Description: In User Settings Edit
  */
@@ -9,6 +9,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 )
 
 func main() {
@@ -122,16 +123,15 @@ func main() {
 	var int7 [5]int = [5]int{11, 3, 7, 9, 7}
 	BubbleSort(&int7)
 
-
 	//定义声明二维数组
 	var arr7 [3][6]int
 	arr7[1][2] = 1
-	arr7[2][3] =2
-	fmt.Println("arr7==",arr7)
+	arr7[2][3] = 2
+	fmt.Println("arr7==", arr7)
 
 	//另外一种初始化二位数组
-	var arr8 [2][3]int = [2][3]int{{1,2,3},{4,5,6}}
-	fmt.Println("arr8=",arr8)
+	var arr8 [2][3]int = [2][3]int{{1, 2, 3}, {4, 5, 6}}
+	fmt.Println("arr8=", arr8)
 
 	//4种方式
 	// var arr8 [2][3]int = [2][3]int{{1,2,3},{4,5,6}}
@@ -153,7 +153,7 @@ func main() {
 	// 声明是不会分配内存的，初始化需要make，分配内存后才能赋值和使用
 	//方式一
 	var a map[string]string
-	a = make(map[string]string,10)//make的作用是给map分配数据空间
+	a = make(map[string]string, 10) //make的作用是给map分配数据空间
 	a["no1"] = "松江"
 	a["no2"] = "武松"
 	a["no1"] = "无用" //不能重复，出现重复，会以最后一个为主
@@ -168,9 +168,9 @@ func main() {
 	fmt.Println(map1)
 	//方式三
 	var map2 map[string]string = map[string]string{
-		"no1":"松江",
-		"no2":"武松",
-		"no3":"鲁智深",
+		"no1": "松江",
+		"no2": "武松",
+		"no3": "鲁智深",
 	}
 	//可添加
 	map2["no4"] = "无用"
@@ -185,6 +185,22 @@ func main() {
 	//没有专门的一个方法一次删除所有的，可以遍历一下key去逐个删除， 
 	//或者make一个新的，将原来的成为垃圾
 
+	//map的排序
+	map_2 := make(map[int]int, 10)
+	map_2[10] = 100
+	map_2[1] = 10
+	map_2[3] = 2
+	map_2[7] = 55
+	fmt.Println(map_2)
+
+	// 通过切片来排序
+	// var int_2 []int = make([]int, 2)
+	var int_2 []int
+	for key, _ := range map_2 {
+		int_2 = append(int_2, key)
+	}
+	sort.Ints(int_2)
+	fmt.Println(int_2)
 
 
 	//例子   map 中的值是 map
@@ -233,6 +249,23 @@ func main() {
 
 	//map每次输出都是无序的
 	//不过int的key，可以通过sort.Ints(keys) 去搞
+	for _, value := range int_2 {
+		fmt.Printf("map_2[%v] =%v \n", value, map_2[value])
+	}
+
+	//map是引用类型，可以自动扩容，里面也可以是结构体
+	//需要先定义Stu
+	type Stu struct {
+		Name    string
+		age     int
+		address string
+	}
+	students := make(map[string]Stu, 10)
+	str1 := Stu{"tom", 18, "上海"}
+	str2 := Stu{"to1m", 18, "上海"}
+	students["no1"] = str1
+	students["no2"] = str2
+	fmt.Println(students)
 }
 
 //冒泡
