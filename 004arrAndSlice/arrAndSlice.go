@@ -174,10 +174,65 @@ func main() {
 	}
 	//可添加
 	map2["no4"] = "无用"
+	fmt.Println(map2) //map[no1:松江 no2:武松 no3:鲁智深 no4:无用]
+
+
+	//delete(map,"key")   delete 是一个内置函数，如果key 存在，就删除key-value，
+	//如果key不存在，不操作，但是也不会报错
+
+	delete(map2,"no4")
 	fmt.Println(map2)
+	//没有专门的一个方法一次删除所有的，可以遍历一下key去逐个删除， 
+	//或者make一个新的，将原来的成为垃圾
 
 
 
+	//例子   map 中的值是 map
+	studentMap := make(map[string]map[string]string)
+	studentMap["stu01"] = make(map[string]string,2)
+	studentMap["stu01"]["name"] = "tom"
+	studentMap["stu01"]["age"] = "18"
+
+	studentMap["stu02"] = make(map[string]string,2)
+	studentMap["stu02"]["name"] = "tom1"
+	studentMap["stu02"]["age"] = "19"
+
+	fmt.Println(studentMap)
+	fmt.Println(studentMap["stu01"])
+	fmt.Println(studentMap["stu01"]["name"])
+
+
+
+	//map遍历只能使用for rang
+
+	//map的长度 
+	fmt.Println(len(studentMap))
+
+	//map切片  slice of map
+	var monsters []map[string]string
+	monsters = make([]map[string]string,2)
+	if(monsters[0] == nil){
+		monsters[0] = make(map[string]string,2)
+		monsters[0]["name"] = "牛魔王"
+		monsters[0]["age"] = "15"
+	}
+	if(monsters[1] == nil){
+		monsters[1] = make(map[string]string,2)
+		monsters[1]["name"] = "牛魔王1"
+		monsters[1]["age"] = "16"
+	}
+
+	newMonter := map[string]string{
+		"name":"牛魔王2",
+		"age":"17",
+	}
+
+	monsters = append(monsters,newMonter)
+
+	fmt.Println(monsters)
+
+	//map每次输出都是无序的
+	//不过int的key，可以通过sort.Ints(keys) 去搞
 }
 
 //冒泡
