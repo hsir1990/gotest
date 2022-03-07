@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	utils "text/util"
+	utils "gotest/util"
 	"time"
 )
 
