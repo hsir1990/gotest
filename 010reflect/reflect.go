@@ -1,5 +1,7 @@
 package main
 
+// reflect包实现了运行时反射，允许程序操作任意类型的对象。典型用法是用静态类型interface{}保存一个值，通过调用TypeOf获取其动态类型信息，
+// 该函数返回一个Type类型值。调用ValueOf函数返回一个Value类型值，该值代表运行时的数据。Zero接受一个Type类型参数并返回一个代表该类型零值的Value类型值。
 import (
 	"fmt"
 	"reflect"
@@ -160,13 +162,25 @@ func main() {
 	// 	reflect01(&num)
 	// 	fmt.Println("num=", num) // 20
 
-	// 6reflect.Value.Elem() 应该如何理解？
-
 	// 	//你可以这样理解rVal.Elem()
 	// 	// num := 9
 	// 	// ptr *int = &num
 	// 	// num2 := *ptr  //=== 类似 rVal.Elem()
 	// }
+
+	// 6reflect.Value.Elem() 应该如何理解？
+
+	// reflect.Value.Elem() //用于获取指针
+
+	// var num int = 10
+	// fn := reflect.ValueOf(&num)
+	// fn.Elem().SetInt(200)
+	// fmt.Printf("%v \n", num)
+	
+	// // fn.Elem()用于获取指针变量,类似下面
+	// var num =10
+	// var b *int = &num
+	// *b = 3
 
 	//给你一个变量，  var v float64 = 12 ，请使用反射来得到它的reflect.Value,然后获取对应的Type，
 	// Kind 和值，并将reflect.Value 转换成interface{}，再将interface{} 转换成float64
