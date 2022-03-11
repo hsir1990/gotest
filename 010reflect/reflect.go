@@ -111,77 +111,73 @@ func main() {
 		Age:  20,
 	}
 	reflectTest02(stu)
-============================================================================================================
-// 	rType= int
-// n2= 102
-// rVal=100 rVal type=reflect.Value
-// num2= 100
-// rType= main.Student
-// kind =struct kind=struct
-// iv={tom 20} iv type=main.Student
-// stu.Name=tom
 
-//3 通过反射可以在让变量在interface{}和Reflect.Value 之间相互转换，这点在前面画过
-// 示意图并在快速入门案例中讲解过，这里我看下如何在代码中体现
-变量 《======》 interface{} 《========》reflect.Value
-//4 使用反射的方式来获取变量的值（并返回对应的类型），要求数据类型匹配，比如x 是 int，
-// 那么就应该使用 reflect.Value(x).Int(),而不能使用其它的，否则报panic
-// func (v Value) Int() int64
-// 返回v持有的有符号整数（表示为int64），如果V的Kind不是int，int8，int16，int32，int64会panic
-// func testInt(b interface{}){
-// 	val := reflect.ValueOf(b)
-// 	fmt.Printf("v = %v \n", val.Int())
-// 	fmt.Printf("v = %v \n", val.Float()) // error
-// }
-//5 通过反射的来修改变量，注意当使用SetXxx方法来设置需要通过对应的指针类型来完成，这样才能改变传入的变量的值，
-//同时需要使用到reflect.Value.Elem() 方法
+	// 	rType= int
+	// n2= 102
+	// rVal=100 rVal type=reflect.Value
+	// num2= 100
+	// rType= main.Student
+	// kind =struct kind=struct
+	// iv={tom 20} iv type=main.Student
+	// stu.Name=tom
 
-// //通过反射，修改,
-// // num int 的值
-// // 修改 student的值
+	//1 Type和Kinb的
+	// Type是类型，Kind是类别， Type和Kind可能是相同，也可能是不同的
+	// 比如： var num int = 10 num 的Type是int， Kind 也是int
+	//  var stu Student stu的Type是pkg1.Student ， Kind是struct
 
-// func reflect01(b interface{}) {
-// 	//2. 获取到 reflect.Value
-// 	rVal := reflect.ValueOf(b)
-// 	// 看看 rVal的Kind是 
-// 	fmt.Printf("rVal kind=%v\n", rVal.Kind())
-// 	//3. rVal
-// 	//Elem返回v持有的接口保管的值的Value封装，或者v持有的指针指向的值的Value封装
-// 	rVal.Elem().SetInt(20)
-// }
-// func main() {
+	//3 通过反射可以在让变量在interface{}和Reflect.Value 之间相互转换，这点在前面画过
+	// 示意图并在快速入门案例中讲解过，这里我看下如何在代码中体现
+	// 变量 《======》 interface{} 《========》reflect.Value
+	//4 使用反射的方式来获取变量的值（并返回对应的类型），要求数据类型匹配，比如x 是 int，
+	// 那么就应该使用 reflect.Value(x).Int(),而不能使用其它的，否则报panic
+	// func (v Value) Int() int64
+	// 返回v持有的有符号整数（表示为int64），如果V的Kind不是int，int8，int16，int32，int64会panic
+	// func testInt(b interface{}){
+	// 	val := reflect.ValueOf(b)
+	// 	fmt.Printf("v = %v \n", val.Int())
+	// 	fmt.Printf("v = %v \n", val.Float()) // error
+	// }
+	//5 通过反射的来修改变量，注意当使用SetXxx方法来设置需要通过对应的指针类型来完成，这样才能改变传入的变量的值，
+	//同时需要使用到reflect.Value.Elem() 方法
 
-// 	var num int = 10
-// 	reflect01(&num)
-// 	fmt.Println("num=", num) // 20
+	// //通过反射，修改,
+	// // num int 的值
+	// // 修改 student的值
 
+	// func reflect01(b interface{}) {
+	// 	//2. 获取到 reflect.Value
+	// 	rVal := reflect.ValueOf(b)
+	// 	// 看看 rVal的Kind是
+	// 	fmt.Printf("rVal kind=%v\n", rVal.Kind())
+	// 	//3. rVal
+	// 	//Elem返回v持有的接口保管的值的Value封装，或者v持有的指针指向的值的Value封装
+	// 	rVal.Elem().SetInt(20)
+	// }
+	// func main() {
 
+	// 	var num int = 10
+	// 	reflect01(&num)
+	// 	fmt.Println("num=", num) // 20
 
-// 6reflect.Value.Elem() 应该如何理解？
+	// 6reflect.Value.Elem() 应该如何理解？
 
-// 	//你可以这样理解rVal.Elem()
-// 	// num := 9
-// 	// ptr *int = &num
-// 	// num2 := *ptr  //=== 类似 rVal.Elem()
-// }
+	// 	//你可以这样理解rVal.Elem()
+	// 	// num := 9
+	// 	// ptr *int = &num
+	// 	// num2 := *ptr  //=== 类似 rVal.Elem()
+	// }
 
+	//给你一个变量，  var v float64 = 12 ，请使用反射来得到它的reflect.Value,然后获取对应的Type，
+	// Kind 和值，并将reflect.Value 转换成interface{}，再将interface{} 转换成float64
 
-
-
-
-
-//给你一个变量，  var v float64 = 12 ，请使用反射来得到它的reflect.Value,然后获取对应的Type，
-// Kind 和值，并将reflect.Value 转换成interface{}，再将interface{} 转换成float64
-
-var str string = "tom"   //ok
+	var str string = "tom"      //ok
 	fs := reflect.ValueOf(&str) //ok fs -> string
 	fs.Elem().SetString("jack") //ok
-	fmt.Printf("%v\n", str) // jack
-
-
+	fmt.Printf("%v\n", str)     // jack
 
 	// 使用反射来遍历结构体的字段，调用结构体的方法，并获取结构体标签的值
-	// 
+	//
 	//创建了一个Monster实例
 	var a Monster = Monster{
 		Name:  "黄鼠狼精",
@@ -189,28 +185,28 @@ var str string = "tom"   //ok
 		Score: 30.8,
 	}
 	//将Monster实例传递给TestStruct函数
-	TestStruct(a)	
-// 2使用反射的方法来获取结构体的tag标签，遍历字段的值，修改字段值，调用结构体方法（要求：
-// 通过传递地址的方式完成，在前面案例上修改即可）
-// 3定义了两个函数test1和test2，定义一个适配器数用作统一处理接口
-// 4 使用反射操作任意结构体类型
-// 5 使用反射创建并操作结构体
-
+	TestStruct(a)
+	// 2使用反射的方法来获取结构体的tag标签，遍历字段的值，修改字段值，调用结构体方法（要求：
+	// 通过传递地址的方式完成，在前面案例上修改即可）
+	// 3定义了两个函数test1和test2，定义一个适配器数用作统一处理接口
+	// 4 使用反射操作任意结构体类型
+	// 5 使用反射创建并操作结构体
 
 }
+
 //定义了一个Monster结构体
 type Monster struct {
-	Name  string `json:"name"`
-	Age   int `json:"monster_age"`
+	Name  string  `json:"name"`
+	Age   int     `json:"monster_age"`
 	Score float32 `json:"成绩"`
 	Sex   string
-	
 }
 
 //方法，返回两个数的和
 func (s Monster) GetSum(n1, n2 int) int {
 	return n1 + n2
 }
+
 //方法， 接收四个值，给s赋值
 func (s Monster) Set(name string, age int, score float32, sex string) {
 	s.Name = name
@@ -233,7 +229,7 @@ func TestStruct(a interface{}) {
 	//获取到a对应的类别
 	kd := val.Kind()
 	//如果传入的不是struct，就退出
-	if kd !=  reflect.Struct {
+	if kd != reflect.Struct {
 		fmt.Println("expect struct")
 		return
 	}
@@ -252,18 +248,17 @@ func TestStruct(a interface{}) {
 			fmt.Printf("Field %d: tag为=%v\n", i, tagVal)
 		}
 	}
-	
+
 	//获取到该结构体有多少个方法
 	numOfMethod := val.NumMethod()
 	fmt.Printf("struct has %d methods\n", numOfMethod)
-	
+
 	//var params []reflect.Value
 	//方法的排序默认是按照 函数名的排序（ASCII码）
 	val.Method(1).Call(nil) //获取到第二个方法。调用它
 
-	
 	//调用结构体的第1个方法Method(0)
-	var params []reflect.Value  //声明了 []reflect.Value
+	var params []reflect.Value //声明了 []reflect.Value
 	params = append(params, reflect.ValueOf(10))
 	params = append(params, reflect.ValueOf(40))
 	res := val.Method(0).Call(params) //传入的参数是 []reflect.Value, 返回[]reflect.Value
