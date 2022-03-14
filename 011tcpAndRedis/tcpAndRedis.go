@@ -9,3 +9,9 @@
 //这个协议是Internet最基本的协议,Internet国际互联网络的基础,简单地说,就是由网络层的IP协议和传输层的TCP协议组成的.
 
 //具体可看18,19章
+
+//加版本打标签，为了给测试，get文件
+
+// $ git commit -m "Emphasize our friendliness" say.go
+// $ git tag v1.0.1
+// $ git push --tags origin v1
