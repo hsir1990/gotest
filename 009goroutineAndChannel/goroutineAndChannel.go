@@ -512,6 +512,34 @@ func main() {
 
 	//问题，在实际开发中，可能我们不好确定什么关闭该管道.
 	//可以使用select 方式可以解决
+	//select 语句类似于 switch 语句，但是select会随机执行一个可运行的case。如果没有case可运行，它将阻塞，直到有case可运行。
+	//select 是Go中的一个控制结构，类似于用于通信的switch语句。每个case必须是一个通信操作，要么是发送要么是接收。 select 随机执行一个可运行的case。如果没有case可运行，它将阻塞，直到有case可运行。一个默认的子句应该总是可运行的。
+	// 每个case都必须是一个通信
+	// 所有channel表达式都会被求值
+	// 所有被发送的表达式都会被求值
+	// 如果任意某个通信可以进行，它就执行；其他被忽略。
+	// 如果有多个case都可以运行，Select会随机公平地选出一个执行。其他不会执行。
+	// 否则：
+	// 如果有default子句，则执行该语句。
+	// 如果没有default字句，select将阻塞，直到某个通信可以运行；Go不会重新对channel或值进行求值。
+
+	// 与switch语句可以选择任何使用相等比较的条件相比，select由比较多的限制，其中最大的一条限制就是每个case语句里必须是一个IO操作
+
+	// select { //不停的在这里检测
+	// 	case <-chanl : //检测有没有数据可以读
+	// 	//如果chanl成功读取到数据，则进行该case处理语句
+	// 	case chan2 <- 1 : //检测有没有可以写
+	// 	//如果成功向chan2写入数据，则进行该case处理语句
+
+	// 	//假如没有default，那么在以上两个条件都不成立的情况下，就会在此阻塞//一般default会不写在里面，select中的default子句总是可运行的，因为会很消耗CPU资源
+	// 	default:
+	// 	//如果以上都没有符合条件，那么则进行default处理流程
+	// 	}
+
+	// 	在一个select语句中，Go会按顺序从头到尾评估每一个发送和接收的语句。
+
+	// 如果其中的任意一个语句可以继续执行（即没有被阻塞），那么就从那些可以执行的语句中任意选择一条来使用。 如果没有任意一条语句可以执行（即所有的通道都被阻塞），那么有两种可能的情况： ①如果给出了default语句，那么就会执行default的流程，同时程序的执行会从select语句后的语句中恢复。 ②如果没有default语句，那么select语句将被阻塞，直到至少有一个case可以进行下去。
+
 	//label:
 	for {
 		select {
@@ -556,12 +584,10 @@ func main() {
 	go sayHello()
 	go test2()
 
-
 	for i := 0; i < 10; i++ {
 		fmt.Println("main() ok=", i)
 		time.Sleep(time.Second)
 	}
-
 
 	//time.Sleep(time.Second * 10) //休眠10秒，防止主线程自己关闭
 	go test() //开启一个线程
@@ -592,7 +618,6 @@ func main() {
 	// main() hello,world 9
 }
 
-
 //函数
 func sayHello() {
 	for i := 0; i < 10; i++ {
@@ -600,6 +625,7 @@ func sayHello() {
 		fmt.Println("hello,world")
 	}
 }
+
 //函数
 func test2() {
 	//这里我们可以使用defer + recover
@@ -613,9 +639,6 @@ func test2() {
 	var myMap map[int]string
 	myMap[0] = "golang" //error
 }
-
-
-
 
 //向 intChan放入 1-8000个数
 func putNum(intChan chan int) {
@@ -700,3 +723,74 @@ func test() {
 		time.Sleep(time.Second)
 	}
 }
+
+// 超时判断
+// //比如在下面的场景中，使用全局resChan来接受response，如果时间超过3S,resChan中还没有数据返回，则第二条case将执行
+// var resChan = make(chan int)
+// // do request
+// func test() {
+//     select {
+//     case data := <-resChan:
+//         doData(data)
+//     case <-time.After(time.Second * 3):
+//         fmt.Println("request time out")
+//     }
+// }
+
+// func doData(data int) {
+//     //...
+// }
+
+// func (Time) After
+// func (t Time) After(u Time) bool
+// 如果t代表的时间点在u之后，返回真；否则返回假。
+
+// func After
+// func After(d Duration) <-chan Time
+// After会在另一线程经过时间段d后向返回值发送当时的时间。等价于NewTimer(d).C。
+
+// Example
+// select {
+// case m := <-c:
+//     handle(m)
+// case <-time.After(5 * time.Minute):
+//     fmt.Println("timed out")
+// }
+
+// 2.退出
+// //主线程（协程）中如下：
+// var shouldQuit=make(chan struct{})
+// fun main(){
+//     {
+//         //loop
+//     }
+//     //...out of the loop
+//     select {
+//         case <-c.shouldQuit:
+//             cleanUp()
+//             return
+//         default:
+//         }
+//     //...
+// }
+
+// //再另外一个协程中，如果运行遇到非法操作或不可处理的错误，就向shouldQuit发送数据通知程序停止运行
+// close(shouldQuit)
+// 3.判断channel是否阻塞
+// //在某些情况下是存在不希望channel缓存满了的需求的，可以用如下方法判断
+// ch := make (chan int, 5)
+// //...
+// data：=0
+// select {
+// case ch <- data:
+// default:
+//     //做相应操作，比如丢弃data。视需求而定
+// }
+
+//两种引用类型 map、channel 是指针包装，而不像 slice 是 struct。
+
+// 1.1.1. Goto、Break、Continue
+//      1.三个语句都可以配合标签(label)使用
+//     2.标签名区分大小写，定以后若不使用会造成编译错误
+//     3.continue、break配合标签(label)可用于多层循环跳出
+//     4.goto是调整执行位置，与continue、break配合标签(label)的结果并不相同

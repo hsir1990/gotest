@@ -1,7 +1,7 @@
 /*
  * @Author: Hsir
  * @Date: 2022-03-04 14:24:55
- * @LastEditTime: 2022-03-08 11:42:07
+ * @LastEditTime: 2022-03-15 14:38:01
  * @LastEditors: Do not edit
  * @Description: In User Settings Edit
  */
@@ -95,7 +95,15 @@ func main() {
 	var slice5 []int = make([]int, 5, 10)
 	copy(slice5, slice4)
 	fmt.Println(slice4) // [1 2 3 4 5]
-	fmt.Println(slice5) //[1 2 3 4 5]
+	fmt.Println(slice5) //[5 10 3 4 5]
+
+	// slice s1 : [8 9]
+	// slice s2 : [0 1 2 3 4]
+
+	// copy(s2, s1)
+	// copied slice s1 : [8 9]
+	// copied slice s2 : [8 9 2 3 4]
+	//应及时将所需数据 copy 到较小的 slice，以便释放超大号底层数组内存。
 
 	//string 底层是一个byte数组，因此也可以进行切片处理
 	var str string = "abcdef"
@@ -280,8 +288,6 @@ func BubbleSort(arr *[5]int) {
 	fmt.Println(*arr)
 }
 
-
-
 // 长度是数组类型的一部分，因此，var a[5] int和var a[10]int是不同的类型。
 // 8.指针数组 [n]*T，数组指针 *[n]T。
 //   7.支持 "=="、"!=" 操作符，因为内存总是被初始化过的。
@@ -289,7 +295,6 @@ func BubbleSort(arr *[5]int) {
 // 也可以这样
 // var str = [5]string{3: "hello world", 4: "tom"}
 // var arr2 = [...]int{1, 2, 3, 4, 5, 6}// 使用索引号初始化元素。
-
 
 // d := [...]struct {
 // 	name string
@@ -299,13 +304,9 @@ func BubbleSort(arr *[5]int) {
 // 	{"user2", 20}, // 别忘了最后一行的逗号。
 // }
 
-
 // b := [...][2]int{{1, 1}, {2, 2}, {3, 3}} // 第 2 纬度不能用 "..."。
 
-
-
 // 值拷贝行为会造成性能问题，通常会建议使用 slice，或数组指针。
-
 
 //  // 若想做一个真正的随机数，要种子
 //     // seed()种子默认是1
@@ -313,9 +314,211 @@ func BubbleSort(arr *[5]int) {
 //     rand.Seed(time.Now().Unix())
 // b[i] = rand.Intn(1000)
 
-
-
-
 // 需要说明，slice 并不是数组或数组指针。它通过内部指针和相关属性引用数组片段，以实现变长方案
 
 // 、、如果 slice == nil，那么 len、cap 结果都等于 0。
+
+// c := append(a, b...)
+
+// arr:=[10]int{1,2,3,4,5,6,7,8,9,10}
+//         fmt.Println("原数组：",arr)
+// append ：向 slice 尾部添加数据，返回新的 slice 对象。
+
+//         fmt.Println("对数组进行截取：")
+//         //如果指定max，max的值最大不能超过截取对象（数组、切片）的容量
+//         s1:=arr[2:5:9] //max:9  low：2  high;5  len:5-2(len=high-low)  cap:9-2(cap=max-low)
+//         fmt.Printf("数组截取之后的类型为：%T,    数据是：%v;长度：%d;容量：%d\n",s1,s1, len(s1), cap(s1))
+
+//         //如果没有指定max，max的值为截取对象（切片、数组）的容量
+//         s2:=s1[1:7]  //max:7  low：1  high;7  len:7-1(len=high-low)  cap:7-1(cap=max-low)
+//         fmt.Println("对切片进行截取：")
+//         fmt.Printf("对切片进行截取之后的数据是：%v,长度:%d； 容量%d\n",s2, len(s2), cap(s2))
+
+// arr:=[10]int{1,2,3,4,5,6,7,8,9,10}
+//         fmt.Println("原数组：",arr)
+
+//         fmt.Println("对数组进行截取：")
+//         //如果指定max，max的值最大不能超过截取对象（数组、切片）的容量
+//         s1:=arr[2:5:9] //max:9  low：2  high;5  len:5-2(len=high-low)  cap:9-2(cap=max-low)
+//         fmt.Printf("数组截取之后的类型为：%T,    数据是：%v;长度：%d;容量：%d\n",s1,s1, len(s1), cap(s1))
+//    //int[]  [3 4 5]  3   9
+//         //如果没有指定max，max的值为截取对象（切片、数组）的容量
+//         s2:=s1[1:7]  //max:7  low：1  high;7  len:7-1(len=high-low)  cap:7-1(cap=max-low)
+//         fmt.Println("对切片进行截取：")
+//         fmt.Printf("对切片进行截取之后的数据是：%v,长度:%d； 容量%d\n",s2, len(s2), cap(s2))
+//  // int[]   [4 5 6 7 8 9]  6  6
+
+//         //利用数组创建切片，切片操作的是同一个底层数组
+//         s1[0]=8888
+//         s2[0]=6666
+//         fmt.Println("操作之后的数组为：",arr)
+// 		// [1 2 8888 6666  5 6 7 8 9 10]
+//         /*
+//         切片对数组的截取  最终都是切片操作的底层数组（通过指针操作原数组）
+//         */
+
+// data[:6:8] 每个数字前都有个冒号， slice内容为data从0到第6位，长度len为6，最大扩充项cap设置为8
+
+// str := "hello world"
+// s1 := str[0:5]
+// fmt.Println(s1) //hello
+
+// s2 := str[6:]
+// fmt.Println(s2) //world
+
+// 数组or切片转字符串：
+// strings.Replace(strings.Trim(fmt.Sprint(array_or_slice), "[]"), " ", ",", -1)
+
+// 切片本身并不是动态数组或者数组指针。它内部实现的数据结构通过指针引用底层数组，设定相关属性将数据读写操作限定在指定的区域内。切片本身是一个只读对象，其工作机制类似数组指针的一种封装
+
+// 切片（slice）是对数组一个连续片段的引用，所以切片是一个引用类型（因此更类似于 C/C++ 中的数组类型，或者 Python 中的 list 类型）。这个片段可以是整个数组，或者是由起始和终止索引标识的一些项的子集。需要注意的是，终止索引标识的项不包括在切片内。切片提供了一个与指向数组的动态窗口。
+
+// 并非所有时候都适合用切片代替数组，因为切片底层数组可能会在堆上分配内存，而且小数组在栈上拷贝的消耗也未必比 make 消耗大。
+//分情况使用数组和切片
+
+// type slice struct {
+//     array unsafe.Pointer   //定义任意类型的指针  //一般都自己定义好 *[]int
+//     len   int
+//     cap   int
+// }
+
+// unsafe.Pointer
+// type Pointer
+// type Pointer *ArbitraryType
+// Pointer类型用于表示任意类型的指针。有4个特殊的只能用于Pointer类型的操作：
+
+// 1) 任意类型的指针可以转换为一个Pointer类型值
+// 2) 一个Pointer类型值可以转换为任意类型的指针
+// 3) 一个uintptr类型值可以转换为一个Pointer类型值
+// 4) 一个Pointer类型值可以转换为一个uintptr类型值
+// 因此，Pointer类型允许程序绕过类型系统读写任意内存。使用它时必须谨慎。
+
+// 如果想从 slice 中得到一块内存地址，可以这样做：
+
+// s := make([]byte, 200)
+// ptr := unsafe.Pointer(&s[0])
+// 如果反过来呢？从 Go 的内存地址中构造一个 slice。
+
+// var ptr unsafe.Pointer
+// var s1 = struct {
+//     addr uintptr
+//     len int
+//     cap int
+// }{ptr, length, length}
+// s := *(*[]byte)(unsafe.Pointer(&s1))  //不明白这是什么意思
+// 构造一个虚拟的结构体，把 slice 的数据结构拼出来。
+
+// 当然还有更加直接的方法，在 Go 的反射中就存在一个与之对应的数据结构 SliceHeader，我们可以用它来构造一个 slice
+
+//     var o []byte
+//     sliceHeader := (*reflect.SliceHeader)((unsafe.Pointer(&o)))
+//     sliceHeader.Cap = length
+//     sliceHeader.Len = length
+//     sliceHeader.Data = uintptr(ptr)
+
+//reflect.SliceHeader
+// type SliceHeader
+// type SliceHeader struct {
+//     Data uintptr
+//     Len  int
+//     Cap  int
+// }
+// SliceHeader代表一个运行时的切片。它不保证使用的可移植性、安全性；它的实现在未来的版本里也可能会改变。而且，Data字段也不能保证它指向的数据不会被当成垃圾收集，因此程序必须维护一个独立的、类型正确的指向底层数据的指针。
+
+// unsafe.Pointer只是单纯的通用指针类型，用于转换不同类型指针，它不可以参与指针运算；
+// 而uintptr是用于指针运算的，GC 不把 uintptr 当指针，也就是说 uintptr 无法持有对象， uintptr 类型的目标会被回收；
+// unsafe.Pointer 可以和 普通指针 进行相互转换；
+// unsafe.Pointer 可以和 uintptr 进行相互转换。
+// 举例
+// 通过一个例子加深理解，接下来尝试用指针的方式给结构体赋值。
+// package main
+
+// import (
+//  "fmt"
+//  "unsafe"
+// )
+
+// type W struct {
+//  b int32
+//  c int64
+// }
+
+// func main() {
+//  var w *W = new(W)
+//  //这时w的变量打印出来都是默认值0，0
+//  fmt.Println(w.b,w.c)
+
+//  //现在我们通过指针运算给b变量赋值为10
+//  b := unsafe.Pointer(uintptr(unsafe.Pointer(w)) + unsafe.Offsetof(w.b))
+//  *((*int)(b)) = 10
+//  //此时结果就变成了10，0
+//  fmt.Println(w.b,w.c)
+// }
+// uintptr(unsafe.Pointer(w)) 获取了 w 的指针起始值
+// unsafe.Offsetof(w.b) 获取 b 变量的偏移量
+// 两个相加就得到了 b 的地址值，将通用指针 Pointer 转换成具体指针 ((*int)(b))，通过 * 符号取值，然后赋值。*((*int)(b)) 相当于把 (*int)(b) 转换成 int 了，最后对变量重新赋值成 10，这样指针运算就完成了。
+
+//nil 切片的指针指向 nil
+
+// 1.1.4. 切片扩容
+// 当一个切片的容量满了，就需要扩容了。怎么扩，策略是什么？
+
+// 如果切片的容量小于 1024 个元素，于是扩容的时候就翻倍增加容量。上面那个例子也验证了这一情况，总容量从原来的4个翻倍到现在的8个。
+
+// 一旦元素个数超过 1024 个元素，那么增长因子就变成 1.25 ，即每次增加原来容量的四分之一
+
+// 过打印的结果，我们可以看到，在这种情况下，扩容以后并没有新建一个新的数组，扩容前后的数组都是同一个，这也就导致了新的切片修改了一个值，也影响到了老的切片了。。并且 append() 操作也改变了原来数组里面的值。一个 append() 操作影响了这么多地方，如果原数组上有多个切片，那么这些切片都会被影响！无意间就产生了莫名的 bug！
+
+// 这种情况，由于原数组还有容量可以扩容，所以执行 append() 操作以后，会在原数组上直接操作，所以这种情况下，扩容以后的数组还是指向原来的数组。
+// 情况二其实就是在扩容策略里面举的例子，在那个例子中之所以生成了新的切片，是因为原来数组的容量已经达到了最大值，再想扩容， Go 默认会先开一片内存区域，把原来的值拷贝过来，然后再执行 append() 操作。这种情况丝毫不影响原数组。
+
+// 所以建议尽量避免情况一，尽量使用情况二，避免 bug 产生。
+
+//copy与append两种深拷贝方式，copy性能更好，建议使用copy。
+// append会创建一个新的切片
+
+// 判断某个键是否存在
+// Go语言中有个判断map中键是否存在的特殊写法，格式如下:
+
+//     value, ok := map[key]
+// 举个例子：
+
+// func main() {
+//     scoreMap := make(map[string]int)
+//     scoreMap["张三"] = 90
+//     scoreMap["小明"] = 100
+//     // 如果key存在ok为true,v为对应的值；不存在ok为false,v为值类型的零值
+//     v, ok := scoreMap["张三"]
+//     if ok {
+//         fmt.Println(v)
+//     } else {
+//         fmt.Println("查无此人")
+//     }
+// }
+
+// 最通俗的话说Map是一种通过key来获取value的一个数据结构，其底层存储方式为数组，在存储时key不能重复，当key重复时，value进行覆盖，我们通过key进行hash运算（可以简单理解为把key转化为一个整形数字）然后对数组的长度取余，得到key存储在数组的哪个下标位置，最后将key和value组装为一个结构体，放入数组下标处，看下图：
+
+// length = len(array) = 4
+// hashkey1 = hash(xiaoming) = 4
+// index1  = hashkey1% length= 0
+// hashkey2 = hash(xiaoli) = 6
+// index2  = hashkey2% length= 2
+
+//  hash冲突的常见解决方法
+// 开放定址法：也就是说当我们存储一个key，value时，发现hashkey(key)的下标已经被别key占用，那我们在这个数组中空间中重新找一个没被占用的存储这个冲突的key，那么没被占用的有很多，找哪个好呢？常见的有线性探测法，线性补偿探测法，随机探测法，这里我们主要说一下线性探测法
+
+// 线性探测，字面意思就是按照顺序来，从冲突的下标处开始往后探测，到达数组末尾时，从数组开始处探测，直到找到一个空位置存储这个key，当数组都找不到的情况下回扩容（事实上当数组容量快满的时候就会扩容了）；查找某一个key的时候，找到key对应的下标，比较key是否相等，如果相等直接取出来，否则按照顺寻探测直到碰到一个空位置，说明key不存在。如下图：首先存储key=xiaoming在下标0处，当存储key=xiaowang时，hash冲突了，按照线性探测，存储在下标1处，（红色的线是冲突或者下标已经被占用了） 再者key=xiaozhao存储在下标4处，当存储key=xiaoliu是，hash冲突了，按照线性探测，从头开始，存储在下标2处 （黄色的是冲突或者下标已经被占用了）
+
+// 拉链法：何为拉链，简单理解为链表，当key的hash冲突时，我们在冲突位置的元素上形成一个链表，通过指针互连接，当查找时，发现key冲突，顺着链表一直往下找，直到链表的尾节点，找不到则返回空，如下图：
+
+// 开放定址（线性探测）和拉链的优缺点
+
+// 由上面可以看出拉链法比线性探测处理简单
+
+// 线性探测查找是会被拉链法会更消耗时间
+
+// 线性探测会更加容易导致扩容，而拉链不会
+
+// 拉链存储了指针，所以空间上会比线性探测占用多一点
+
+// 拉链是动态申请存储空间的，所以更适合链长不确定的

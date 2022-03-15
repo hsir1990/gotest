@@ -1,7 +1,7 @@
 /*
  * @Author: Hsir
  * @Date: 2022-02-24 16:03:32
- * @LastEditTime: 2022-03-14 18:11:30
+ * @LastEditTime: 2022-03-15 09:57:04
  * @LastEditors: Do not edit
  * @Description: In User Settings Edit
  */
@@ -129,6 +129,10 @@ func main() {
 	str3 := "hell0"
 	// str3[0] = 'a'//报错
 	fmt.Println(str3, str3[0])
+
+	// //只能重新切来改变
+	// s := []rune(str3)
+	// s[0] = 'G' 这样可以
 
 	var str4 string = "abc \n asd"
 	var str5 string = `sdfa

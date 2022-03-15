@@ -1,7 +1,7 @@
 /*
  * @Author: Hsir
  * @Date: 2022-03-02 18:07:07
- * @LastEditTime: 2022-03-04 14:23:57
+ * @LastEditTime: 2022-03-15 10:00:16
  * @LastEditors: Do not edit
  * @Description: In User Settings Edit
  */
@@ -93,7 +93,7 @@ func main() {
 	//13 将指定的子串替换成另外一个子串 strings.replace("go go hello","go语言",n)  n可以指定你希望替换几个，  如果 n=-1 表示全部替换
 	str7 := "go go hello"
 	var str8 string = strings.Replace(str7, "go", "go语言", -1)
-	fmt.Printf("str7=%v,替换后str8=%v \n", str7, str8)
+	fmt.Printf("str7=%v,替换后str8=%v \n", str7, str8) //go语言 go语言 hello
 
 	//14按照指定的某个字符，为分割标识，将一个字符串拆分成字符串数组  strings.Split("hello,word,ok", ",")
 	var strArr []string = strings.Split("hello,word,ok", ",")

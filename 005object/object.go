@@ -167,7 +167,7 @@ func main() {
 	a = A(b) // ? 可以转换，但是有要求，就是结构体的的字段要完全一样(包括:名字、个数和类型！)
 	fmt.Println(a, b)
 
-	//3.  结构体进行type重新定义（相当于取别名）.golang 认为是新的数据类型，但是相互间可以强转
+	//3.  结构体进行type重新定义  类型定义  （相当于半个取别名）.golang 认为是新的数据类型，但是相互间可以强转
 	// type Student2 struct {
 	// 	Name "string"
 	// }
@@ -175,6 +175,15 @@ func main() {
 	// var stu1 Student2
 	// var stu2 Stu2
 	// stu2 = stu1  //报错可以写成 stu2 = Stu2(stu1)
+
+	//类型别名
+	// type MyInt = int
+	// var b MyInt
+	// fmt.Printf("type of b:%T\n", b) //type of b:int
+	//类型定义
+	// type NewInt int
+	// var a NewInt
+	// fmt.Printf("type of a:%T\n", a) //type of a:main.NewInt
 
 	type interger int
 	var i interger = 10
@@ -340,3 +349,216 @@ func (s *Student3) String() string {
 	str := fmt.Sprintf("Name=[%v],Age=[%v]", s.Name, s.Age)
 	return str
 }
+
+//临时数据，匿名结构体
+// var user struct{Name string; Age int}
+//     user.Name = "pprof.cn"
+//     user.Age = 18
+//     fmt.Printf("%#v\n", user)
+
+// //创建指针类型结构体
+// var p2 = new(person)
+// fmt.Printf("%T\n", p2)     //*main.person
+// p2.name = "测试"
+// p2.age = 18
+// p2.city = "北京"
+// fmt.Printf("p2=%#v\n", p2) //p2=&main.person{name:"测试", city:"北京", age:18}
+
+// 取结构体的地址实例化
+// 使用&对结构体进行取地址操作相当于对该结构体类型进行了一次new实例化操作。
+
+// p3 := &person{}
+// fmt.Printf("%T\n", p3)     //*main.person
+// fmt.Printf("p3=%#v\n", p3) //p3=&main.person{name:"", city:"", age:0}
+// p3.name = "博客"
+// p3.age = 30
+// p3.city = "成都"
+// fmt.Printf("p3=%#v\n", p3) //p3=&main.person{name:"博客", city:"成都", age:30}
+
+// p3.name = "博客"其实在底层是(*p3).name = "博客"，这是Go语言帮我们实现的语法糖。
+
+// 使用键值对初始化
+// 使用键值对对结构体进行初始化时，键对应结构体的字段，值对应该字段的初始值。
+
+// p5 := person{
+//     name: "pprof.cn",
+//     city: "北京",
+//     age:  18,
+// }
+// fmt.Printf("p5=%#v\n", p5) //p5=main.person{name:"pprof.cn", city:"北京", age:18}
+// 也可以对结构体指针进行键值对初始化，例如：
+
+// p6 := &person{
+//     name: "pprof.cn",
+//     city: "北京",
+//     age:  18,
+// }
+// fmt.Printf("p6=%#v\n", p6) //p6=&main.person{name:"pprof.cn", city:"北京", age:18}
+
+// 当某些字段没有初始值的时候，该字段可以不写。此时，没有指定初始值的字段的值就是该字段类型的零值。
+
+// p7 := &person{
+//     city: "北京",
+// }
+// fmt.Printf("p7=%#v\n", p7) //p7=&main.person{name:"", city:"北京", age:0}
+
+// 结构体内存布局
+// type test struct {
+//     a int8
+//     b int8
+//     c int8
+//     d int8
+// }
+// n := test{
+//     1, 2, 3, 4,
+// }
+// fmt.Printf("n.a %p\n", &n.a)
+// fmt.Printf("n.b %p\n", &n.b)
+// fmt.Printf("n.c %p\n", &n.c)
+// fmt.Printf("n.d %p\n", &n.d)
+// 输出：
+
+//     n.a 0xc0000a0060
+//     n.b 0xc0000a0061
+//     n.c 0xc0000a0062
+//     n.d 0xc0000a0063
+
+// 面试题1
+// type student struct {
+//     name string
+//     age  int
+// }
+
+// func main() {
+//     m := make(map[string]*student)
+//     stus := []student{
+//         {name: "pprof.cn", age: 18},
+//         {name: "测试", age: 23},
+//         {name: "博客", age: 28},
+//     }
+
+//     for _, stu := range stus {
+//         m[stu.name] = &stu//循环过程中，stu变量只声明了一次，所以stu地址即&stu是不变的，值是变化的。所以&stu始终不变
+//     }
+//     for k, v := range m {
+//         fmt.Println(k, "=>", v.name)
+//     }
+// }
+// pprof.cn => 博客
+// 测试 => 博客
+// 博客 => 博客
+// for range 每次产生的 key 和 value 其实是对应的 stus 里面值的拷贝，不是对应的 stus 里面的值的引用，所以出现了这种问题。
+// stu 是 stus 在for循环中申请的一个局部变量，每次循环都会拷贝 stus 中对应的值 stu。迭代遍历之后，stu 每次会被重新赋值，而在 m 这个 map 中记录的 value 只不过是 stu 的内存地址。
+//可能是因为每次定义数据，用的是同一个地址，然后地址相同
+
+// 重新申请一个变量，即可解决
+//     for _, stu := range stus {
+//         s:=stu
+//         m[stu.name] = &s
+//     }
+
+// 指针类型的接收者由一个结构体的指针组成，由于指针的特性，调用方法时修改接收者指针的任意成员变量，在方法结束后，修改都是有效的。这种方式就十分接近于其他语言中面向对象中的this或者self。
+//.保证一致性，如果有某个方法使用了指针接收者，那么其他的方法也应该使用指针接收者。
+
+// 结构体的匿名字段
+// 结构体允许其成员字段在声明时没有字段名而只有类型，这种没有名字的字段就称为匿名字段。
+
+// //Person 结构体Person类型
+// type Person struct {
+//     string
+//     int
+// }
+
+// func main() {
+//     p1 := Person{
+//         "pprof.cn",
+//         18,
+//     }
+//     fmt.Printf("%#v\n", p1)        //main.Person{string:"pprof.cn", int:18}
+//     fmt.Println(p1.string, p1.int) //pprof.cn 18
+// }
+// 匿名字段默认采用类型名作为字段名，结构体要求字段名称必须唯一，因此一个结构体中同种类型的匿名字段只能有一个。
+
+// 嵌套结构体
+// 一个结构体中可以嵌套包含另一个结构体或结构体指针。
+
+// //Address 地址结构体
+// type Address struct {
+//     Province string
+//     City     string
+// }
+
+// //User 用户结构体
+// type User struct {
+//     Name    string
+//     Gender  string
+//     Address Address
+// }
+
+// func main() {
+//     user1 := User{
+//         Name:   "pprof",
+//         Gender: "女",
+//         Address: Address{
+//             Province: "黑龙江",
+//             City:     "哈尔滨",
+//         },
+//     }
+//     fmt.Printf("user1=%#v\n", user1)//user1=main.User{Name:"pprof", Gender:"女", Address:main.Address{Province:"黑龙江", City:"哈尔滨"}}
+// }
+// 1.3.16. 嵌套匿名结构体
+// //Address 地址结构体
+// type Address struct {
+//     Province string
+//     City     string
+// }
+
+// //User 用户结构体
+// type User struct {
+//     Name    string
+//     Gender  string
+//     Address //匿名结构体
+// }
+
+// func main() {
+//     var user2 User
+//     user2.Name = "pprof"
+//     user2.Gender = "女"
+//     user2.Address.Province = "黑龙江"    //通过匿名结构体.字段名访问
+//     user2.City = "哈尔滨"                //直接访问匿名结构体的字段名
+//     fmt.Printf("user2=%#v\n", user2) //user2=main.User{Name:"pprof", Gender:"女", Address:main.Address{Province:"黑龙江", City:"哈尔滨"}}
+// }
+// 当访问结构体成员时会先在结构体中查找该字段，找不到再去匿名结构体中查找。
+
+// 结构体的“继承”
+// Go语言中使用结构体也可以实现其他编程语言中面向对象的继承。
+
+// //Animal 动物
+// type Animal struct {
+//     name string
+// }
+
+// func (a *Animal) move() {
+//     fmt.Printf("%s会动！\n", a.name)
+// }
+
+// //Dog 狗
+// type Dog struct {
+//     Feet    int8
+//     *Animal //通过嵌套匿名结构体实现继承
+// }
+
+// func (d *Dog) wang() {
+//     fmt.Printf("%s会汪汪汪~\n", d.name)
+// }
+
+// func main() {
+//     d1 := &Dog{
+//         Feet: 4,
+//         Animal: &Animal{ //注意嵌套的是结构体指针
+//             name: "乐乐",
+//         },
+//     }
+//     d1.wang() //乐乐会汪汪汪~
+//     d1.move() //乐乐会动！
+// }

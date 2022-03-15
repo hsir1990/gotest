@@ -92,7 +92,7 @@ func main() {
 
 	var int5 int8 = 2
 	switch int5 {
-	case 5:
+	case 5, 7:
 		fmt.Println("true5")
 	case 2:
 		fmt.Println("true2")
@@ -328,3 +328,59 @@ func addUpper() func(int) int { //注意要返回一个函数
 		return i
 	}
 }
+
+// &（取地址）和*（根据地址取值）
+
+//指针类型，如：*int、*int64、*string等
+// ptr := &v    // v的类型为T
+
+// v:代表被取地址的变量，类型为T
+//     ptr:用于接收地址的变量，ptr的类型就为*T，称做T的指针类型。*代表指针。
+
+//需要测试
+// func main() {
+//     var a *int
+//     *a = 100 //应该是个地址，需要new分配内存
+//     fmt.Println(*a)
+
+//     var b map[string]int //需要定义make分配内存
+//     b["测试"] = 100
+//     fmt.Println(b)
+// }
+// 执行上面的代码会引发panic，为什么呢？ 在Go语言中对于引用类型的变量，我们在使用的时候不仅要声明它，还要为它分配内存空间，否则我们的值就没办法存储。而对于值类型的声明不需要分配内存空间，是因为它们在声明的时候已经默认分配好了内存空间。要分配内存，就引出来今天的new和make。 Go语言中new和make是内建的两个函数，主要用来分配内存
+
+//new函数不太常用，使用new函数得到的是一个类型的指针，并且该指针对应的值为该类型的零值。
+// func new(Type) *Type
+// 其中，
+
+//     1.Type表示类型，new函数只接受一个参数，这个参数是一个类型
+//     2.*Type表示类型指针，new函数返回一个指向该类型内存地址的指针。
+
+// a := new(int)
+//     b := new(bool)
+//     fmt.Printf("%T\n", a) // *int
+//     fmt.Printf("%T\n", b) // *bool
+//     fmt.Println(*a)       // 0
+//     fmt.Println(*b)       // false
+
+// var a *int只是声明了一个指针变量a但是没有初始化
+
+// 应该按照如下方式使用内置的new函数对a进行初始化之后就可以正常对其赋值了：
+// var a *int
+//     a = new(int)
+//     *a = 10
+//     fmt.Println(*a)
+
+// make也是用于内存分配的，区别于new，它只用于slice、map以及chan的内存创建，而且它返回的类型就是这三个类型本身，而不是他们的指针类型，因为这三种类型就是引用类型，所以就没有必要返回他们的指针了。
+// b = make(map[string]int, 10)
+
+// 1.二者都是用来做内存分配的。
+//     2.make只用于slice、map以及channel的初始化，返回的还是这三个引用类型本身；
+//     3.而new用于类型的内存分配，并且内存对应的值为类型零值，返回的是指向类型的指针。
+
+// var a int
+// fmt.Println(&a)
+// var p *int
+// p = &a
+// *p = 20
+// fmt.Println(a)

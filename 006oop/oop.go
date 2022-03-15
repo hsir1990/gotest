@@ -197,6 +197,10 @@ func (stu Stu2) test01() {
 func (stu Stu2) test02() {
 
 }
+
+//stu Stu2  是接收者
+//     1.接收者变量：接收者中的参数变量名在命名时，官方建议使用接收者类型名的第一个小写字母，而不是self、this之类的命名。例如，Person类型的接收者变量应该命名为 p，Connector类型的接收者变量应该命名为c等。
+// 2.接收者类型：接收者类型和参数类似，可以是指针类型和非指针类型。
 func (stu Stu2) test03() {
 
 }
@@ -204,16 +208,14 @@ func (stu Stu2) test03() {
 type T interface {
 }
 
-
 //定义Student类型
 type Student struct {
-
 }
 
 //当结构体中的变量首字母是小写的时候，外部的不能直接使用
 //使用工厂模式实现夸包创建结构体实例（变量）
 func main() {
-	//工厂模式  go的结构体没有构造函数，通常可以使用工厂模式来解决问题
+	//工厂模式  go的结构体没有构造函数，通常可以使用工厂模式来解决问题，使用指针能节省拷贝的开销
 	var stu = utilmain.NewStudent("tom-", 18)
 	fmt.Println(*stu)
 	fmt.Println("name=", stu.Name, "age=", stu.GetAge())
@@ -495,15 +497,13 @@ func main() {
 	// 手机开始工作。。。
 	// 手机 在打电话..
 	// 手机停止工作。。。
-	
+
 	// 手机开始工作。。。
 	// 手机 在打电话..
 	// 手机停止工作。。。
-	
+
 	// 相机开始工作。。。
 	// 相机停止工作。。。
-	
-
 
 	//遍历usbArrType
 	//Phone还有一个特有的方法call()，请遍历Usb数组，如果是Phone变量，
@@ -514,7 +514,6 @@ func main() {
 		fmt.Println()
 	}
 	//fmt.Println(usbArr)
-
 
 	//写一个函数，循环判断传入参数的类型
 	var n_1 float32 = 1.1
@@ -540,33 +539,29 @@ func main() {
 }
 
 //写一个函数，循环判断传入参数的类型
-func TypeJudge(items... interface{}){
-	for index, val := range items{
-		switch val.(type){
-			case bool :
-				fmt.Printf("第%v个参数是 bool 类型，值是%v\n", index, val)
-			case float32 :
-				fmt.Printf("第%v个参数是 float32 类型，值是%v\n", index, val)
-			case float64 :
-				fmt.Printf("第%v个参数是 float64 类型，值是%v\n", index, val)
-			case int, int32, int64 :
-				fmt.Printf("第%v个参数是 整数 类型，值是%v\n", index, val)
-			case string :
-				fmt.Printf("第%v个参数是 string 类型，值是%v\n", index, val)
-			case Student :
-				fmt.Printf("第%v个参数是 Student 类型，值是%v\n", index, val)
-			case *Student :
-				fmt.Printf("第%v个参数是 *Student 类型，值是%v\n", index, val)
-			default :
-				fmt.Printf("第%v个参数是  类型 不确定，值是%v\n", index, val)
+func TypeJudge(items ...interface{}) {
+	for index, val := range items {
+		switch val.(type) {
+		case bool:
+			fmt.Printf("第%v个参数是 bool 类型，值是%v\n", index, val)
+		case float32:
+			fmt.Printf("第%v个参数是 float32 类型，值是%v\n", index, val)
+		case float64:
+			fmt.Printf("第%v个参数是 float64 类型，值是%v\n", index, val)
+		case int, int32, int64:
+			fmt.Printf("第%v个参数是 整数 类型，值是%v\n", index, val)
+		case string:
+			fmt.Printf("第%v个参数是 string 类型，值是%v\n", index, val)
+		case Student:
+			fmt.Printf("第%v个参数是 Student 类型，值是%v\n", index, val)
+		case *Student:
+			fmt.Printf("第%v个参数是 *Student 类型，值是%v\n", index, val)
+		default:
+			fmt.Printf("第%v个参数是  类型 不确定，值是%v\n", index, val)
 		}
-			
 
 	}
 }
-
-
-
 
 //声明/定义一个接口
 type UsbType interface {
