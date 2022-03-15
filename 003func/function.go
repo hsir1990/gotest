@@ -1,7 +1,7 @@
 /*
  * @Author: Hsir
  * @Date: 2022-03-02 18:07:07
- * @LastEditTime: 2022-03-15 10:00:16
+ * @LastEditTime: 2022-03-15 18:34:35
  * @LastEditors: Do not edit
  * @Description: In User Settings Edit
  */
@@ -267,3 +267,40 @@ func panicTest2() {
 	}
 	fmt.Println("panicTest2()继续执行。。。。")
 }
+
+// • 不支持 嵌套 (nested) 一个包不能有两个名字一样的函数。
+// • 不支持 重载 (overload)
+// • 不支持 默认参数 (default parameter)。
+
+// func test(x, y int, s string) (int, string) {
+//     // 类型相同的相邻参数，参数类型可合并。 多返回值必须用括号。
+//     n := x + y
+//     return n, fmt.Sprintf(s, n)
+// }
+
+// package main
+
+// import "fmt"
+
+// func test(fn func() int) int {
+//     return fn()
+// }
+// // 定义函数类型。
+// type FormatFunc func(s string, x, y int) string
+
+// func format(fn FormatFunc, s string, x, y int) string {
+//     return fn(s, x, y)
+// }
+
+// func main() {
+//     s1 := test(func() int { return 100 }) // 直接将匿名函数当参数。
+
+//     s2 := format(func(s string, x, y int) string {
+//         return fmt.Sprintf(s, x, y)
+//     }, "%d, %d", 10, 20)
+
+//     println(s1, s2)
+// }
+// 输出结果：
+
+//     100 10, 20
