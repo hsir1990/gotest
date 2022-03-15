@@ -304,3 +304,312 @@ func panicTest2() {
 // 输出结果：
 
 //     100 10, 20
+
+
+
+// 注意1：无论是值传递，还是引用传递，传递给函数的都是变量的副本，不过，值传递是值的拷贝。引用传递是地址的拷贝，一般来说，地址拷贝更为高效。而值拷贝取决于拷贝的对象大小，对象越大，则性能越低。
+
+// 注意2：map、slice、chan、指针、interface默认以引用的方式传递。
+
+// 可变参数本质上就是 slice。只能有一个，且必须是最后一个。
+// func add(a int, b int, args…int) int {    //2个或多个参数
+// }
+
+// interface{}传递任意类型数据是Go语言的惯例用法，而且interface{}是类型安全的。
+
+
+// 命名返回参数允许 defer 延迟调用通过闭包读取和修改。
+
+// package main
+
+// func add(x, y int) (z int) {
+//     defer func() {
+//         z += 100
+//     }()
+
+//     z = x + y
+//     return
+// }
+
+// func main() {
+//     println(add(1, 2)) 
+// }
+// 输出结果：
+
+//     103
+
+
+// package main
+
+// func add(x, y int) (z int) {
+//     defer func() {
+//         println(z) // 输出: 203
+//     }()
+
+//     z = x + y
+//     return z + 200 // 执行顺序: (z = z + 200) -> (call defer) -> (return)
+// }
+
+// func main() {
+//     println(add(1, 2)) // 输出: 203
+// }
+// 输出结果：
+
+//     203
+//     203
+
+// package main
+
+// func main() {
+//     // --- function variable ---
+//     fn := func() { println("Hello, World!") }
+//     fn()
+
+//     // --- function collection ---
+//     fns := [](func(x int) int){
+//         func(x int) int { return x + 1 },
+//         func(x int) int { return x + 2 },
+//     }
+//     println(fns[0](100))
+
+//     // --- function as field ---
+//     d := struct {
+//         fn func() string
+//     }{
+//         fn: func() string { return "Hello, World!" },
+//     }
+//     println(d.fn())
+
+//     // --- channel of function ---
+//     fc := make(chan func() string, 2)
+//     fc <- func() string { return "Hello, World!" }
+//     println((<-fc)())
+// }
+// 输出结果：
+
+//     Hello, World!
+//     101
+//     Hello, World!
+//     Hello, World!
+
+
+
+// defer f.Close
+// 这个大家用的都很频繁,但是go语言编程举了一个可能一不小心会犯错的例子.
+
+// package main
+
+// import "fmt"
+
+// type Test struct {
+//     name string
+// }
+
+// func (t *Test) Close() {
+//     fmt.Println(t.name, " closed")
+// }
+// func main() {
+//     ts := []Test{{"a"}, {"b"}, {"c"}}
+//     for _, t := range ts {
+//         defer t.Close()
+//     }
+// }
+// 输出结果：
+
+//     c  closed
+//     c  closed
+//     c  closed
+// 这个输出并不会像我们预计的输出c b a,而是输出c c c
+
+// 可是按照前面的go spec中的说明,应该输出c b a才对啊.
+
+// 那我们换一种方式来调用一下.
+
+// package main
+
+// import "fmt"
+
+// type Test struct {
+//     name string
+// }
+
+// func (t *Test) Close() {
+//     fmt.Println(t.name, " closed")
+// }
+// func Close(t Test) {
+//     t.Close()
+// }
+// func main() {
+//     ts := []Test{{"a"}, {"b"}, {"c"}}
+//     for _, t := range ts {
+//         defer Close(t)
+//     }
+// }
+// 输出结果：
+
+//     c  closed
+//     b  closed
+//     a  closed
+// 这个时候输出的就是c b a
+
+// 当然,如果你不想多写一个函数,也很简单,可以像下面这样,同样会输出c b a
+
+// 看似多此一举的声明
+
+// package main
+
+// import "fmt"
+
+// type Test struct {
+//     name string
+// }
+
+// func (t *Test) Close() {
+//     fmt.Println(t.name, " closed")
+// }
+// func main() {
+//     ts := []Test{{"a"}, {"b"}, {"c"}}
+//     for _, t := range ts {
+//         t2 := t
+//         defer t2.Close()
+//     }
+// }
+// 输出结果：
+
+//     c  closed
+//     b  closed
+//     a  closed
+
+// 延迟调用参数在注册时求值或复制，可用指针或闭包 "延迟" 读取。
+
+// package main
+
+// func test() {
+//     x, y := 10, 20
+
+//     defer func(i int) {
+//         println("defer:", i, y) // y 闭包引用
+//     }(x) // x 被复制
+
+//     x += 10
+//     y += 100
+//     println("x =", x, "y =", y)
+// }
+
+// func main() {
+//     test()
+// }
+// 输出结果:
+
+//     x = 20 y = 120
+//     defer: 10 120
+
+
+// package main
+
+// func test(x int) {
+//     defer println("a")
+//     defer println("b")
+
+//     defer func() {
+//         println(100 / x) // div0 异常未被捕获，逐步往外传递，最终终止进程。
+//     }()
+
+//     defer println("c")
+// }
+
+// func main() {
+//     test(0)
+// }
+// 输出结果:
+
+//     c
+//     b
+//     a
+//     panic: runtime error: integer divide by zero
+
+// type Mutex
+// type Mutex struct {
+//     // 包含隐藏或非导出字段
+// }
+// Mutex是一个互斥锁，可以创建为其他结构体的字段；零值为解锁状态。Mutex类型的锁和线程无关，可以由不同的线程加锁和解锁。
+
+
+// package main
+
+// import (
+//     "fmt"
+//     "sync"
+//     "time"
+// )
+
+// var lock sync.Mutex
+
+// func test() {
+//     lock.Lock()
+//     lock.Unlock()
+// }
+
+// func testdefer() {
+//     lock.Lock()
+//     defer lock.Unlock()
+// }
+
+// func main() {
+//     func() {
+//         t1 := time.Now()
+
+//         for i := 0; i < 10000; i++ {
+//             test()
+//         }
+//         elapsed := time.Since(t1)
+//         fmt.Println("test elapsed: ", elapsed)
+//     }()
+//     func() {
+//         t1 := time.Now()
+
+//         for i := 0; i < 10000; i++ {
+//             testdefer()
+//         }
+//         elapsed := time.Since(t1)
+//         fmt.Println("testdefer elapsed: ", elapsed)
+//     }()
+
+// }
+// 输出结果:
+
+//     test elapsed:  223.162µs
+//     testdefer elapsed:  781.304µs
+
+
+
+defer 与 closure
+package main
+
+import (
+    "errors"
+    "fmt"
+)
+
+func foo(a, b int) (i int, err error) {
+    defer fmt.Printf("first defer err %v\n", err)
+    defer func(err error) { fmt.Printf("second defer err %v\n", err) }(err)
+    defer func() { fmt.Printf("third defer err %v\n", err) }()
+    if b == 0 {
+        err = errors.New("divided by zero!")
+        return
+    }
+
+    i = a / b
+    return
+}
+
+func main() {
+    foo(2, 0)
+}
+输出结果：
+
+    third defer err divided by zero!
+    second defer err <nil>
+    first defer err <nil>
+解释：如果 defer 后面跟的不是一个 closure 最后执行的时候我们得到的并不是最新的值。
