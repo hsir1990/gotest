@@ -1,7 +1,7 @@
 /*
  * @Author: Hsir
  * @Date: 2022-02-24 16:03:32
- * @LastEditTime: 2022-03-01 17:30:19
+ * @LastEditTime: 2022-03-14 18:11:30
  * @LastEditors: Do not edit
  * @Description: In User Settings Edit
  */
@@ -18,10 +18,78 @@ var (
 	v3, v4 = "11", 22
 )
 
+// const同时声明多个常量时，如果省略了值则表示和上面一行的值相同。 例如：
+
+//     const (
+//         n1 = 100
+//         n2
+//         n3
+//     )
+// 上面示例中，常量n1、n2、n3的值都是100。
+
+// iota是go语言的常量计数器，只能在常量的表达式中使用。 iota在const关键字出现时将被重置为0。const中每新增一行常量声明将使iota计数一次(iota可理解为const语句块中的行索引)。 使用iota能简化定义，在定义枚举时很有用。
+
+// 举个例子：
+
+//     const (
+//             n1 = iota //0
+//             n2        //1
+//             n3        //2
+//             n4        //3
+//         )
+
+// const (
+// 	n1 = iota //0
+// 	n2 = 100  //100
+// 	n3 = iota //2
+// 	n4        //3
+// )
+// const n5 = iota //0
+
+// const (
+// 	n1 = iota //0
+// 	n2        //1
+// 	_
+// 	n4        //3
+// )
+
+// 定义数量级 （这里的<<表示左移操作，1<<10表示将1的二进制表示向左移10位，也就是由1变成了10000000000，也就是十进制的1024。同理2<<2表示将2的二进制表示向左移2位，也就是由10变成了1000，也就是十进制的8。）
+
+//     const (
+//             _  = iota
+//             KB = 1 << (10 * iota)
+//             MB = 1 << (10 * iota)
+//             GB = 1 << (10 * iota)
+//             TB = 1 << (10 * iota)
+//             PB = 1 << (10 * iota)
+//         )
+// 多个iota定义在一行
+
+//     const (
+//             a, b = iota + 1, iota + 2 //1,2
+//             c, d                      //2,3
+//             e, f                      //3,4
+//         )
+
+// 1.1.3. 复数
+// complex64和complex128
+
+// 复数有实部和虚部，complex64的实部和虚部为32位，complex128的实部和虚部为64位
+
 func main() {
 	var v1 = 12.2
 	fmt.Println(v1)
 	v5, v6 := 12, 12.3
+
+	var name, sex = "pprof.cn", 1
+
+	// func main() {
+	// 	x, _ := foo()
+	// 	_, y := foo()
+	// 	fmt.Println("x=", x)
+	// 	fmt.Println("y=", y)
+	// }
+	// 匿名变量不占用命名空间，不会分配内存，所以匿名变量之间不存在重复声明。 (在Lua等编程语言里，匿名变量也被叫做哑元变量。)
 
 	// v2 := 3 //重复定义出错
 	var v7 int = 12
@@ -29,7 +97,7 @@ func main() {
 	v9 := .005
 	v9 = 5.11e3
 
-	fmt.Println(v2, v3, v4, v5, v6, v7, v8, v9)
+	fmt.Println(v2, v3, v4, v5, v6, v7, v8, v9, name, sex)
 
 	var byt1 string = "nihao"
 	var byt2 byte = 'a'
