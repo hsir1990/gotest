@@ -562,3 +562,873 @@ func (s *Student3) String() string {
 //     d1.wang() //乐乐会汪汪汪~
 //     d1.move() //乐乐会动！
 // }
+
+// func (recevier type) methodName(参数列表)(返回值列表){}
+// 当接受者不是一个指针时，该方法操作对应接受者的值的副本(意思就是即使你使用了指针调用函数，但是函数的接受者是值类型，所以函数内部操作还是对副本的操作，而不是指针操作。
+
+//与普通函数不同，接收者为指针类型和值类型的方法，指针类型和值类型的变量均可相互调用
+
+// 	普通函数与方法的区别
+// 1.对于普通函数，接收者为值类型时，不能将指针类型的数据直接传递，反之亦然。
+
+// 2.对于方法（如struct的方法），接收者为值类型时，可以直接用指针类型的变量调用方法，反过来同样也可以。
+
+// package main
+
+// //普通函数与方法的区别（在接收者分别为值类型和指针类型的时候）
+
+// import (
+//     "fmt"
+// )
+
+// //1.普通函数
+// //接收值类型参数的函数
+// func valueIntTest(a int) int {
+//     return a + 10
+// }
+
+// //接收指针类型参数的函数
+// func pointerIntTest(a *int) int {
+//     return *a + 10
+// }
+
+// func structTestValue() {
+//     a := 2
+//     fmt.Println("valueIntTest:", valueIntTest(a))
+//     //函数的参数为值类型，则不能直接将指针作为参数传递
+//     //fmt.Println("valueIntTest:", valueIntTest(&a))
+//     //compile error: cannot use &a (type *int) as type int in function argument
+
+//     b := 5
+//     fmt.Println("pointerIntTest:", pointerIntTest(&b))
+//     //同样，当函数的参数为指针类型时，也不能直接将值类型作为参数传递
+//     //fmt.Println("pointerIntTest:", pointerIntTest(b))
+//     //compile error:cannot use b (type int) as type *int in function argument
+// }
+
+// //2.方法
+// type PersonD struct {
+//     id   int
+//     name string
+// }
+
+// //接收者为值类型
+// func (p PersonD) valueShowName() {
+//     fmt.Println(p.name)
+// }
+
+// //接收者为指针类型
+// func (p *PersonD) pointShowName() {
+//     fmt.Println(p.name)
+// }
+
+// func structTestFunc() {
+//     //值类型调用方法
+//     personValue := PersonD{101, "hello world"}
+//     personValue.valueShowName()
+//     personValue.pointShowName()
+
+//     //指针类型调用方法
+//     personPointer := &PersonD{102, "hello golang"}
+//     personPointer.valueShowName()
+//     personPointer.pointShowName()
+
+//     //与普通函数不同，接收者为指针类型和值类型的方法，指针类型和值类型的变量均可相互调用
+// }
+
+// func main() {
+//     structTestValue()
+//     structTestFunc()
+// }
+// 输出结果：
+
+//     valueIntTest: 12
+//     pointerIntTest: 15
+//     hello world
+//     hello world
+//     hello golang
+//     hello golang
+
+// 匿名字段
+// Golang匿名字段 ：可以像字段成员那样访问匿名字段方法，编译器负责查找。
+
+// package main
+
+// import "fmt"
+
+// type User struct {
+//     id   int
+//     name string
+// }
+
+// type Manager struct {
+//     User
+// }
+
+// func (self *User) ToString() string { // receiver = &(Manager.User)
+//     return fmt.Sprintf("User: %p, %v", self, self)
+// }
+
+// func main() {
+//     m := Manager{User{1, "Tom"}}
+//     fmt.Printf("Manager: %p\n", &m)
+//     fmt.Println(m.ToString())
+// }
+// 输出结果:
+
+//     Manager: 0xc42000a060
+//     User: 0xc42000a060, &{1 Tom}
+// 通过匿名字段，可获得和继承类似的复用能力。依据编译器查找次序，只需在外层定义同名方法，就可以实现 "override"。
+
+// package main
+
+// import "fmt"
+
+// type User struct {
+//     id   int
+//     name string
+// }
+
+// type Manager struct {
+//     User
+//     title string
+// }
+
+// func (self *User) ToString() string {
+//     return fmt.Sprintf("User: %p, %v", self, self)
+// }
+
+// func (self *Manager) ToString() string {
+//     return fmt.Sprintf("Manager: %p, %v", self, self)
+// }
+
+// func main() {
+//     m := Manager{User{1, "Tom"}, "Administrator"}
+
+//     fmt.Println(m.ToString())
+
+//     fmt.Println(m.User.ToString())
+// }
+// 输出结果:
+
+//     Manager: 0xc420074180, &{{1 Tom} Administrator}
+//     User: 0xc420074180, &{1 Tom}
+
+// ///////下面的需要测试一下 ，下面的理论不对
+// // • 类型 T 方法集包含全部 receiver T 方法。 ----不对
+// // • 类型 *T 方法集包含全部 receiver T + *T 方法。
+// // • 如类型 S 包含匿名字段 T，则 S 和 *S 方法集包含 T 方法。----不对
+// // • 如类型 S 包含匿名字段 *T，则 S 和 *S 方法集包含 T + *T 方法。
+// // • 不管嵌入 T 或 *T，*S 方法集总是包含 T + *T 方法。
+// type Stu struct {
+// 	name string
+// 	age  int
+// }
+
+// func (s Stu) test() {
+// 	fmt.Println("test--- s", s.name)
+// }
+// func (s *Stu) test1() {
+// 	fmt.Println("test1--- s", (*s).name)
+// }
+
+// var st Stu = Stu{
+// 	name: "tom",
+// 	age:  18,
+// }
+// st.test1() //这样没有问题，可以执行
+
+// 这条规则说的是当我们嵌入一个类型的指针，嵌入类型的接受者为值类型或指针类型的方法将被提升，可以被外部类型的值或者指针调用。
+
+// package main
+
+// import (
+//     "fmt"
+// )
+
+// type S struct {
+//     T
+// }
+
+// type T struct {
+//     int
+// }
+
+// func (t T) testT() {
+//     fmt.Println("如类型 S 包含匿名字段 *T，则 S 和 *S 方法集包含 T 方法")
+// }
+// func (t *T) testP() {
+//     fmt.Println("如类型 S 包含匿名字段 *T，则 S 和 *S 方法集包含 *T 方法")
+// }
+
+// func main() {
+//     s1 := S{T{1}}
+//     s2 := &s1
+//     fmt.Printf("s1 is : %v\n", s1)
+//     s1.testT()
+//     s1.testP()
+//     fmt.Printf("s2 is : %v\n", s2)
+//     s2.testT()
+//     s2.testP()
+// }
+// 输出结果：
+
+//     s1 is : {{1}}
+//     如类型 S 包含匿名字段 *T，则 S 和 *S 方法集包含 T 方法
+//     如类型 S 包含匿名字段 *T，则 S 和 *S 方法集包含 *T 方法
+//     s2 is : &{{1}}
+//     如类型 S 包含匿名字段 *T，则 S 和 *S 方法集包含 T 方法
+//     如类型 S 包含匿名字段 *T，则 S 和 *S 方法集包含 *T 方法
+
+// 表达式
+// Golang 表达式 ：根据调用者不同，方法分为两种表现形式:
+
+//     instance.method(args...) ---> <type>.func(instance, args...)
+// 前者称为 method value，后者 method expression。
+
+// 两者都可像普通函数那样赋值和传参，区别在于 method value 绑定实例，而 method expression 则须显式传参。
+
+// package main
+
+// import "fmt"
+
+// type User struct {
+//     id   int
+//     name string
+// }
+
+// func (self *User) Test() {
+//     fmt.Printf("%p, %v\n", self, self)
+// }
+
+// func main() {
+//     u := User{1, "Tom"}
+//     u.Test()
+
+//     mValue := u.Test
+//     mValue() // 隐式传递 receiver
+
+//     mExpression := (*User).Test
+//     mExpression(&u) // 显式传递 receiver
+// }
+// 输出结果:
+
+//     0xc42000a060, &{1 Tom}
+//     0xc42000a060, &{1 Tom}
+//     0xc42000a060, &{1 Tom}
+// 需要注意，method value 会复制 receiver。
+
+// package main
+
+// import "fmt"
+
+// type User struct {
+//     id   int
+//     name string
+// }
+
+// func (self User) Test() {
+//     fmt.Println(self)
+// }
+
+// func main() {
+//     u := User{1, "Tom"}
+//     mValue := u.Test // 立即复制 receiver，因为不是指针类型，不受后续修改影响。
+
+//     u.id, u.name = 2, "Jack"
+//     u.Test()
+
+//     mValue()
+// }
+// 输出结果
+
+//     {2 Jack}
+//     {1 Tom}
+// 在汇编层面，method value 和闭包的实现方式相同，实际返回 FuncVal 类型对象。
+
+//     FuncVal { method_address, receiver_copy }
+// 可依据方法集转换 method expression，注意 receiver 类型的差异。
+
+// package main
+
+// import "fmt"
+
+// type User struct {
+//     id   int
+//     name string
+// }
+
+// func (self *User) TestPointer() {
+//     fmt.Printf("TestPointer: %p, %v\n", self, self)
+// }
+
+// func (self User) TestValue() {
+//     fmt.Printf("TestValue: %p, %v\n", &self, self)
+// }
+
+// func main() {
+//     u := User{1, "Tom"}
+//     fmt.Printf("User: %p, %v\n", &u, u)
+
+//     mv := User.TestValue
+//     mv(u)
+
+//     mp := (*User).TestPointer
+//     mp(&u)
+
+//     mp2 := (*User).TestValue // *User 方法集包含 TestValue。签名变为 func TestValue(self *User)。实际依然是 receiver value copy。
+//     mp2(&u)
+// }
+// 输出:
+
+//     User: 0xc42000a060, {1 Tom}
+//     TestValue: 0xc42000a0a0, {1 Tom}
+//     TestPointer: 0xc42000a060, &{1 Tom}
+//     TestValue: 0xc42000a100, {1 Tom}
+// 将方法 "还原" 成函数，就容易理解下面的代码了。--------------我还是不理解这
+
+// package main
+
+// type Data struct{}
+
+// func (Data) TestValue() {}
+
+// func (*Data) TestPointer() {}
+
+// func main() {
+//     var p *Data = nil
+//     p.TestPointer()
+
+//     (*Data)(nil).TestPointer() // method value
+//     (*Data).TestPointer(nil)   // method expression
+
+//     // p.TestValue()            // invalid memory address or nil pointer dereference
+
+//     // (Data)(nil).TestValue()  // cannot convert nil to type Data
+//     // Data.TestValue(nil)      // cannot use nil as type Data in function argument
+// }
+
+// 自定义error：
+// package main
+
+// import (
+//     "fmt"
+//     "os"
+//     "time"
+// )
+
+// type PathError struct {
+//     path       string
+//     op         string
+//     createTime string
+//     message    string
+// }
+
+// func (p *PathError) Error() string {
+//     return fmt.Sprintf("path=%s \nop=%s \ncreateTime=%s \nmessage=%s", p.path,
+//         p.op, p.createTime, p.message)
+// }
+
+// func Open(filename string) error {
+
+//     file, err := os.Open(filename)
+//     if err != nil {
+//         return &PathError{
+//             path:       filename, //get path error, path=/Users/pprof/Desktop/go/src/test.txt
+//             op:         "read",
+//             message:    err.Error(), //message=open /Users/pprof/Desktop/go/src/test.txt: no such file or directory
+//             createTime: fmt.Sprintf("%v", time.Now()),  // createTime=2018-04-05 11:25:17.331915 +0800 CST m=+0.000441790
+//         }
+//     }
+
+//     defer file.Close()
+//     return nil
+// }
+
+// func main() {
+//     err := Open("/Users/5lmh/Desktop/go/src/test.txt")
+//     switch v := err.(type) {
+//     case *PathError:
+//         fmt.Println("get path error,", v)
+//     default:
+
+//     }
+
+// }
+// 输出结果：
+
+//     get path error, path=/Users/pprof/Desktop/go/src/test.txt
+//     op=read
+//     createTime=2018-04-05 11:25:17.331915 +0800 CST m=+0.000441790
+//     message=open /Users/pprof/Desktop/go/src/test.txt: no such file or directory
+
+//go支持只提供类型而不写字段名的方式，也就是匿名字段，也称为嵌入字段
+
+// 接口
+// go支持只提供类型而不写字段名的方式，也就是匿名字段，也称为嵌入字段
+
+// package main
+
+// import "fmt"
+
+// //    go支持只提供类型而不写字段名的方式，也就是匿名字段，也称为嵌入字段
+
+// //人
+// type Person struct {
+//     name string
+//     sex  string
+//     age  int
+// }
+
+// type Student struct {
+//     Person
+//     id   int
+//     addr string
+// }
+
+// func main() {
+//     // 初始化
+//     s1 := Student{Person{"5lmh", "man", 20}, 1, "bj"}
+//     fmt.Println(s1)
+
+//     s2 := Student{Person: Person{"5lmh", "man", 20}}
+//     fmt.Println(s2)
+
+//     s3 := Student{Person: Person{name: "5lmh"}}
+//     fmt.Println(s3)
+// }
+// 输出结果：
+
+//     {{5lmh man 20} 1 bj}
+//     {{5lmh man 20} 0 }
+//     {{5lmh  0} 0 }
+// 同名字段的情况
+
+// package main
+
+// import "fmt"
+
+// //人
+// type Person struct {
+//     name string
+//     sex  string
+//     age  int
+// }
+
+// type Student struct {
+//     Person
+//     id   int
+//     addr string
+//     //同名字段
+//     name string
+// }
+
+// func main() {
+//     var s Student
+//     // 给自己字段赋值了
+//     s.name = "5lmh"
+//     fmt.Println(s)
+
+//     // 若给父类同名字段赋值，如下
+//     s.Person.name = "枯藤"
+//     fmt.Println(s)
+// }
+// 输出结果：
+
+//     {{  0} 0  5lmh}
+//     {{枯藤  0} 0  5lmh}
+// 所有的内置类型和自定义类型都是可以作为匿名字段去使用
+
+// package main
+
+// import "fmt"
+
+// //人
+// type Person struct {
+//     name string
+//     sex  string
+//     age  int
+// }
+
+// // 自定义类型
+// type mystr string
+
+// // 学生
+// type Student struct {
+//     Person
+//     int
+//     mystr
+// }
+
+// func main() {
+//     s1 := Student{Person{"5lmh", "man", 18}, 1, "bj"}
+//     fmt.Println(s1)
+// }
+// 输出结果：
+
+//     {{5lmh man 18} 1 bj}
+// 指针类型匿名字段
+
+// package main
+
+// import "fmt"
+
+// //人
+// type Person struct {
+//     name string
+//     sex  string
+//     age  int
+// }
+
+// // 学生
+// type Student struct {
+//     *Person
+//     id   int
+//     addr string
+// }
+
+// func main() {
+//     s1 := Student{&Person{"5lmh", "man", 18}, 1, "bj"}
+//     fmt.Println(s1)
+//     fmt.Println(s1.name)
+//     fmt.Println(s1.Person.name)
+// }
+// 输出结果：
+
+//     {0xc00005c360 1 bj}
+//     zs
+//     zs
+
+//在Go语言中接口（interface）是一种类型，一种抽象的类型
+// interface是一组method的集合，是duck-type programming的一种体现。接口做的事情就像是定义一个协议（规则），只要一台机器有洗衣服和甩干的功能，我就称它为洗衣机。不关心属性（数据），只关心行为（方法）。
+
+// 为了保护你的Go语言职业生涯，请牢记接口（interface）是一种类型。
+
+// 接口是一个或多个方法签名的集合。
+//     任何类型的方法集中只要拥有该接口'对应的全部方法'签名。
+//     就表示它 "实现" 了该接口，无须在该类型上显式声明实现了哪个接口。
+//     这称为Structural Typing。
+//     所谓对应方法，是指有相同名称、参数列表 (不包括参数名) 以及返回值。
+//     当然，该类型还可以有其他方法。
+
+//     接口只有方法声明，没有实现，没有数据字段。
+//     接口可以匿名嵌入其他接口，或嵌入到结构中。
+//     对象赋值给接口时，会发生拷贝，而接口内部存储的是指向这个复制品的指针，既无法修改复制品的状态，也无法获取指针。
+//     只有当接口存储的类型和对象都为nil时，接口才等于nil。
+//     接口调用不会做receiver的自动转换。
+//     接口同样支持匿名字段方法。
+//     接口也可实现类似OOP中的多态。
+//     空接口可以作为任何类型数据的容器。
+//     一个类型可实现多个接口。
+//     接口命名习惯以 er 结尾。
+
+// 	type 接口类型名 interface{
+//         方法名1( 参数列表1 ) 返回值列表1
+//         方法名2( 参数列表2 ) 返回值列表2
+//         …
+//     }
+
+// //    1.接口名：使用type将接口定义为自定义的类型名。Go语言的接口在命名时，一般会在单词后面添加er，如有写操作的接口叫Writer，有字符串功能的接口叫Stringer等。接口名最好要能突出该接口的类型含义。
+// type writer interface{
+//     Write([]byte) error
+// }
+
+// 值接收者和指针接收者实现接口的区别
+// 使用值接收者实现接口和使用指针接收者实现接口有什么区别呢？接下来我们通过一个例子看一下其中的区别。
+
+// 我们有一个Mover接口和一个dog结构体。
+
+// type Mover interface {
+//     move()
+// }
+
+// type dog struct {}
+// 1.1.7. 值接收者实现接口
+// func (d dog) move() {
+//     fmt.Println("狗会动")
+// }
+// 此时实现接口的是dog类型：
+
+// func main() {
+//     var x Mover
+//     var wangcai = dog{} // 旺财是dog类型
+//     x = wangcai         // x可以接收dog类型
+//     var fugui = &dog{}  // 富贵是*dog类型
+//     x = fugui           // x可以接收*dog类型
+//     x.move()
+// }
+// 从上面的代码中我们可以发现，使用值接收者实现接口之后，不管是dog结构体还是结构体指针*dog类型的变量都可以赋值给该接口变量。因为Go语言中有对指针类型变量求值的语法糖，dog指针fugui内部会自动求值*fugui。
+
+// 1.1.8. 指针接收者实现接口
+// 同样的代码我们再来测试一下使用指针接收者有什么区别：
+
+// func (d *dog) move() {
+//     fmt.Println("狗会动")
+// }
+// func main() {
+//     var x Mover
+//     var wangcai = dog{} // 旺财是dog类型
+//     x = wangcai         // x不可以接收dog类型
+//     var fugui = &dog{}  // 富贵是*dog类型
+//     x = fugui           // x可以接收*dog类型
+// }
+// 此时实现Mover接口的是*dog类型，所以不能给x传入dog类型的wangcai，此时x只能存储*dog类型的值。
+
+// type People interface {
+//     Speak(string) string
+// }
+
+// type Student struct{}
+
+// func (stu *Stduent) Speak(think string) (talk string) {
+//     if think == "sb" {
+//         talk = "你是个大帅比"
+//     } else {
+//         talk = "您好"
+//     }
+//     return
+// }
+
+// func main() {
+//     var peo People = Student{}
+//     think := "bitch"
+//     fmt.Println(peo.Speak(think))
+// }
+//报错
+// .\test.go:33:12: undefined: Stduent
+// .\test.go:89:6: cannot use Student{} (type Student) as type People in assignment:
+//         Student does not implement People (missing Speak method)
+
+// 类型与接口的关系
+// 1.2.1. 一个类型实现多个接口
+// 一个类型可以同时实现多个接口，而接口间彼此独立，不知道对方的实现。 例如，狗可以叫，也可以动。我们就分别定义Sayer接口和Mover接口，如下： Mover接口。
+
+// // Sayer 接口
+// type Sayer interface {
+//     say()
+// }
+
+// // Mover 接口
+// type Mover interface {
+//     move()
+// }
+// dog既可以实现Sayer接口，也可以实现Mover接口。
+
+// type dog struct {
+//     name string
+// }
+
+// // 实现Sayer接口
+// func (d dog) say() {
+//     fmt.Printf("%s会叫汪汪汪\n", d.name)
+// }
+
+// // 实现Mover接口
+// func (d dog) move() {
+//     fmt.Printf("%s会动\n", d.name)
+// }
+
+// func main() {
+//     var x Sayer
+//     var y Mover
+
+//     var a = dog{name: "旺财"}
+//     x = a
+//     y = a
+//     x.say()
+//     y.move()
+// }
+// 1.2.2. 多个类型实现同一接口
+// Go语言中不同的类型还可以实现同一接口 首先我们定义一个Mover接口，它要求必须由一个move方法。
+
+// // Mover 接口
+// type Mover interface {
+//     move()
+// }
+// 例如狗可以动，汽车也可以动，可以使用如下代码实现这个关系：
+
+// type dog struct {
+//     name string
+// }
+
+// type car struct {
+//     brand string
+// }
+
+// // dog类型实现Mover接口
+// func (d dog) move() {
+//     fmt.Printf("%s会跑\n", d.name)
+// }
+
+// // car类型实现Mover接口
+// func (c car) move() {
+//     fmt.Printf("%s速度70迈\n", c.brand)
+// }
+// 这个时候我们在代码中就可以把狗和汽车当成一个会动的物体来处理了，不再需要关注它们具体是什么，只需要调用它们的move方法就可以了。
+
+// func main() {
+//     var x Mover
+//     var a = dog{name: "旺财"}
+//     var b = car{brand: "保时捷"}
+//     x = a
+//     x.move()
+//     x = b
+//     x.move()
+// }
+// 上面的代码执行结果如下：
+
+//     旺财会跑
+//     保时捷速度70迈
+// 并且一个接口的方法，不一定需要由一个类型完全实现，接口的方法可以通过在类型中嵌入其他类型或者结构体来实现。
+
+// // WashingMachine 洗衣机
+// type WashingMachine interface {
+//     wash()
+//     dry()
+// }
+
+// // 甩干器
+// type dryer struct{}
+
+// // 实现WashingMachine接口的dry()方法
+// func (d dryer) dry() {
+//     fmt.Println("甩一甩")
+// }
+
+// // 海尔洗衣机
+// type haier struct {
+//     dryer //嵌入甩干器
+// }
+
+// // 实现WashingMachine接口的wash()方法
+// func (h haier) wash() {
+//     fmt.Println("洗刷刷")
+// }
+// 1.2.3. 接口嵌套
+// 接口与接口间可以通过嵌套创造出新的接口。
+
+// // Sayer 接口
+// type Sayer interface {
+//     say()
+// }
+
+// // Mover 接口
+// type Mover interface {
+//     move()
+// }
+
+// // 接口嵌套
+// type animal interface {
+//     Sayer
+//     Mover
+// }
+// 嵌套得到的接口的使用与普通接口一样，这里我们让cat实现animal接口：
+
+// type cat struct {
+//     name string
+// }
+
+// func (c cat) say() {
+//     fmt.Println("喵喵喵")
+// }
+
+// func (c cat) move() {
+//     fmt.Println("猫会动")
+// }
+
+// func main() {
+//     var x animal
+//     x = cat{name: "花花"}
+//     x.move()
+//     x.say()
+// }
+// 1.3. 空接口
+// 1.3.1. 空接口的定义
+// 空接口是指没有定义任何方法的接口。因此任何类型都实现了空接口。
+
+// 空接口类型的变量可以存储任意类型的变量。
+
+// func main() {
+//     // 定义一个空接口x
+//     var x interface{}
+//     s := "pprof.cn"
+//     x = s
+//     fmt.Printf("type:%T value:%v\n", x, x)
+//     i := 100
+//     x = i
+//     fmt.Printf("type:%T value:%v\n", x, x)
+//     b := true
+//     x = b
+//     fmt.Printf("type:%T value:%v\n", x, x)
+// }
+// 1.3.2. 空接口的应用
+// 空接口作为函数的参数
+// 使用空接口实现可以接收任意类型的函数参数。
+
+// // 空接口作为函数参数
+// func show(a interface{}) {
+//     fmt.Printf("type:%T value:%v\n", a, a)
+// }
+// 空接口作为map的值
+// 使用空接口实现可以保存任意值的字典。
+
+// // 空接口作为map值
+//     var studentInfo = make(map[string]interface{})
+//     studentInfo["name"] = "李白"
+//     studentInfo["age"] = 18
+//     studentInfo["married"] = false
+//     fmt.Println(studentInfo)
+// 1.3.3. 类型断言
+// 空接口可以存储任意类型的值，那我们如何获取其存储的具体数据呢？
+
+// 接口值
+// 一个接口的值（简称接口值）是由一个具体类型和具体类型的值两部分组成的。这两部分分别称为接口的动态类型和动态值。
+
+// 我们来看一个具体的例子：
+
+// var w io.Writer
+// w = os.Stdout
+// w = new(bytes.Buffer)
+// w = nil
+// 请看下图分解：
+
+// 分解
+
+// 想要判断空接口中的值这个时候就可以使用类型断言，其语法格式：
+
+//     x.(T)
+// 其中：
+
+//     x：表示类型为interface{}的变量
+//     T：表示断言x可能是的类型。
+// 该语法返回两个参数，第一个参数是x转化为T类型后的变量，第二个值是一个布尔值，若为true则表示断言成功，为false则表示断言失败。
+
+// 举个例子：
+
+// func main() {
+//     var x interface{}
+//     x = "pprof.cn"
+//     v, ok := x.(string)
+//     if ok {
+//         fmt.Println(v)
+//     } else {
+//         fmt.Println("类型断言失败")
+//     }
+// }
+// 上面的示例中如果要断言多次就需要写多个if判断，这个时候我们可以使用switch语句来实现：
+
+// func justifyType(x interface{}) {
+//     switch v := x.(type) {
+//     case string:
+//         fmt.Printf("x is a string，value is %v\n", v)
+//     case int:
+//         fmt.Printf("x is a int is %v\n", v)
+//     case bool:
+//         fmt.Printf("x is a bool is %v\n", v)
+//     default:
+//         fmt.Println("unsupport type！")
+//     }
+// }
+// 因为空接口可以存储任意类型值的特点，所以空接口在Go语言中的使用十分广泛。
+
+// 关于接口需要注意的是，只有当有两个或两个以上的具体类型必须以相同的方式进行处理时才需要定义接口。不要为了接口而写接口，那样只会增加不必要的抽象，导致不必要的运行时损耗。

@@ -10,19 +10,34 @@ import (
 // 	age  int
 // }
 
-// // 面试题2
-type student struct {
-	id   int
-	name string
-	age  int
-}
+// // // 面试题2
+// type student struct {
+// 	id   int
+// 	name string
+// 	age  int
+// }
 
-func demo(ce []student) {
-	//切片是引用传递，是可以改变值的
-	ce[1].age = 999
-	// ce = append(ce, student{3, "xiaowang", 56})
-	// return ce
-}
+// func demo(ce []student) {
+// 	//切片是引用传递，是可以改变值的
+// 	ce[1].age = 999
+// 	// ce = append(ce, student{3, "xiaowang", 56})
+// 	// return ce
+// }
+// //面试题3
+// type People interface {
+//     Speak(string) string
+// }
+
+// type Student struct{}
+
+// func (stu *Stduent) Speak(think string) (talk string) {
+//     if think == "sb" {
+//         talk = "你是个大帅比"
+//     } else {
+//         talk = "您好"
+//     }
+//     return
+// }
 func main() {
 	// var a *int
 	// *a = 100  //应该是个地址// 或者new一下
@@ -58,17 +73,20 @@ func main() {
 	// //         s:=stu
 	// //         m[stu.name] = &s
 	// //     }
-
-	var ce []student //定义一个切片类型的结构体
-	ce = []student{
-		student{1, "xiaoming", 22},
-		student{2, "xiaozhang", 33},
-	}
-	fmt.Println(ce)
-	demo(ce)
-	fmt.Println(ce)
+	// // 面试题2
+	// var ce []student //定义一个切片类型的结构体
+	// ce = []student{
+	// 	student{1, "xiaoming", 22},
+	// 	student{2, "xiaozhang", 33},
+	// }
+	// fmt.Println(ce)
+	// demo(ce)
+	// fmt.Println(ce)
 
 	// 	[{1 xiaoming 22} {2 xiaozhang 33}]
 	// [{1 xiaoming 22} {2 xiaozhang 999}]
-
+	// //面试题3
+	// var peo People = Student{}
+	// think := "bitch"
+	// fmt.Println(peo.Speak(think))
 }
