@@ -1,7 +1,7 @@
 /*
  * @Author: Hsir
  * @Date: 2022-03-02 18:07:07
- * @LastEditTime: 2022-03-15 18:34:35
+ * @LastEditTime: 2022-03-16 09:46:02
  * @LastEditors: Do not edit
  * @Description: In User Settings Edit
  */
@@ -305,8 +305,6 @@ func panicTest2() {
 
 //     100 10, 20
 
-
-
 // 注意1：无论是值传递，还是引用传递，传递给函数的都是变量的副本，不过，值传递是值的拷贝。引用传递是地址的拷贝，一般来说，地址拷贝更为高效。而值拷贝取决于拷贝的对象大小，对象越大，则性能越低。
 
 // 注意2：map、slice、chan、指针、interface默认以引用的方式传递。
@@ -316,7 +314,6 @@ func panicTest2() {
 // }
 
 // interface{}传递任意类型数据是Go语言的惯例用法，而且interface{}是类型安全的。
-
 
 // 命名返回参数允许 defer 延迟调用通过闭包读取和修改。
 
@@ -332,12 +329,11 @@ func panicTest2() {
 // }
 
 // func main() {
-//     println(add(1, 2)) 
+//     println(add(1, 2))
 // }
 // 输出结果：
 
 //     103
-
 
 // package main
 
@@ -391,8 +387,6 @@ func panicTest2() {
 //     101
 //     Hello, World!
 //     Hello, World!
-
-
 
 // defer f.Close
 // 这个大家用的都很频繁,但是go语言编程举了一个可能一不小心会犯错的例子.
@@ -504,7 +498,6 @@ func panicTest2() {
 //     x = 20 y = 120
 //     defer: 10 120
 
-
 // package main
 
 // func test(x int) {
@@ -533,7 +526,6 @@ func panicTest2() {
 //     // 包含隐藏或非导出字段
 // }
 // Mutex是一个互斥锁，可以创建为其他结构体的字段；零值为解锁状态。Mutex类型的锁和线程无关，可以由不同的线程加锁和解锁。
-
 
 // package main
 
@@ -581,35 +573,314 @@ func panicTest2() {
 //     test elapsed:  223.162µs
 //     testdefer elapsed:  781.304µs
 
+// defer 与 closure
+// package main
 
+// import (
+//     "errors"
+//     "fmt"
+// )
 
-defer 与 closure
-package main
+// func foo(a, b int) (i int, err error) {
+//     defer fmt.Printf("first defer err %v\n", err)
+//     defer func(err error) { fmt.Printf("second defer err %v\n", err) }(err)
+//     defer func() { fmt.Printf("third defer err %v\n", err) }()
+//     if b == 0 {
+//         err = errors.New("divided by zero!")
+//         return
+//     }
 
-import (
-    "errors"
-    "fmt"
-)
+//     i = a / b
+//     return
+// }
 
-func foo(a, b int) (i int, err error) {
-    defer fmt.Printf("first defer err %v\n", err)
-    defer func(err error) { fmt.Printf("second defer err %v\n", err) }(err)
-    defer func() { fmt.Printf("third defer err %v\n", err) }()
-    if b == 0 {
-        err = errors.New("divided by zero!")
-        return
-    }
+// func main() {
+//     foo(2, 0)
+// }
+// 输出结果：
 
-    i = a / b
-    return
-}
+//     third defer err divided by zero!
+//     second defer err <nil>
+//     first defer err <nil>
+// 解释：如果 defer 后面跟的不是一个 closure 最后执行的时候我们得到的并不是最新的值。
 
-func main() {
-    foo(2, 0)
-}
-输出结果：
+// defer 与 return
+// package main
 
-    third defer err divided by zero!
-    second defer err <nil>
-    first defer err <nil>
-解释：如果 defer 后面跟的不是一个 closure 最后执行的时候我们得到的并不是最新的值。
+// import "fmt"
+
+// func foo() (i int) {
+
+//     i = 0
+//     defer func() {
+//         fmt.Println(i)
+//     }()
+
+//     return 2
+// }
+
+// func main() {
+//     foo()
+// }
+// 输出结果：
+
+//     2
+// 解释：在有具名返回值的函数中（这里具名返回值为 i），执行 return 2 的时候实际上已经将 i 的值重新赋值为 2。所以defer closure 输出结果为 2 而不是 1。
+
+// defer nil 函数
+// package main
+
+// import (
+//     "fmt"
+// )
+
+// func test() {
+//     var run func() = nil
+//     defer run()
+//     fmt.Println("runs")
+// }
+
+// func main() {
+//     defer func() {
+//         if err := recover(); err != nil {
+//             fmt.Println(err)
+//         }
+//     }()
+//     test()
+// }
+// 输出结果：
+
+// runs
+// runtime error: invalid memory address or nil pointer dereference
+// 解释：名为 test 的函数一直运行至结束，然后 defer 函数会被执行且会因为值为 nil 而产生 panic 异常。然而值得注意的是，run() 的声明是没有问题，因为在test函数运行完成后它才会被调用。
+
+// 在错误的位置使用 defer
+// 当 http.Get 失败时会抛出异常。
+
+// package main
+
+// import "net/http"
+
+// func do() error {
+//     res, err := http.Get("http://www.google.com")
+//     defer res.Body.Close()
+//     if err != nil {
+//         return err
+//     }
+
+//     // ..code...
+
+//     return nil
+// }
+
+// func main() {
+//     do()
+// }
+// 输出结果：
+
+//     panic: runtime error: invalid memory address or nil pointer dereference
+// 因为在这里我们并没有检查我们的请求是否成功执行，当它失败的时候，我们访问了 Body 中的空变量 res ，因此会抛出异常
+
+// 解决方案
+// 总是在一次成功的资源分配下面使用 defer ，对于这种情况来说意味着：当且仅当 http.Get 成功执行时才使用 defer
+
+// package main
+
+// import "net/http"
+
+// func do() error {
+//     res, err := http.Get("http://xxxxxxxxxx")
+//     if res != nil {
+//         defer res.Body.Close()
+//     }
+
+//     if err != nil {
+//         return err
+//     }
+
+//     // ..code...
+
+//     return nil
+// }
+
+// func main() {
+//     do()
+// }
+// 在上述的代码中，当有错误的时候，err 会被返回，否则当整个函数返回的时候，会关闭 res.Body 。
+
+// 解释：在这里，你同样需要检查 res 的值是否为 nil ，这是 http.Get 中的一个警告。通常情况下，出错的时候，返回的内容应为空并且错误会被返回，可当你获得的是一个重定向 error 时， res 的值并不会为 nil ，但其又会将错误返回。上面的代码保证了无论如何 Body 都会被关闭，如果你没有打算使用其中的数据，那么你还需要丢弃已经接收的数据。
+
+// 不检查错误
+// 在这里，f.Close() 可能会返回一个错误，可这个错误会被我们忽略掉
+
+// package main
+
+// import "os"
+
+// func do() error {
+//     f, err := os.Open("book.txt")
+//     if err != nil {
+//         return err
+//     }
+
+//     if f != nil {
+//         defer f.Close()
+//     }
+
+//     // ..code...
+
+//     return nil
+// }
+
+// func main() {
+//     do()
+// }
+// 改进一下
+
+// package main
+
+// import "os"
+
+// func do() error {
+//     f, err := os.Open("book.txt")
+//     if err != nil {
+//         return err
+//     }
+
+//     if f != nil {
+//         defer func() {
+//             if err := f.Close(); err != nil {
+//                 // log etc
+//             }
+//         }()
+//     }
+
+//     // ..code...
+
+//     return nil
+// }
+
+// func main() {
+//     do()
+// }
+// 再改进一下
+
+// 通过命名的返回变量来返回 defer 内的错误。
+
+// package main
+
+// import "os"
+
+// func do() (err error) {
+//     f, err := os.Open("book.txt")
+//     if err != nil {
+//         return err
+//     }
+
+//     if f != nil {
+//         defer func() {
+//             if ferr := f.Close(); ferr != nil {
+//                 err = ferr
+//             }
+//         }()
+//     }
+
+//     // ..code...
+
+//     return nil
+// }
+
+// func main() {
+//     do()
+// }
+// 释放相同的资源
+
+// 如果你尝试使用相同的变量释放不同的资源，那么这个操作可能无法正常执行。
+
+// package main
+
+// import (
+//     "fmt"
+//     "os"
+// )
+
+// func do() error {
+//     f, err := os.Open("book.txt")
+//     if err != nil {
+//         return err
+//     }
+//     if f != nil {
+//         defer func() {
+//             if err := f.Close(); err != nil {
+//                 fmt.Printf("defer close book.txt err %v\n", err)
+//             }
+//         }()
+//     }
+
+//     // ..code...
+
+//     f, err = os.Open("another-book.txt")
+//     if err != nil {
+//         return err
+//     }
+//     if f != nil {
+//         defer func() {
+//             if err := f.Close(); err != nil {
+//                 fmt.Printf("defer close another-book.txt err %v\n", err)
+//             }
+//         }()
+//     }
+
+//     return nil
+// }
+
+// func main() {
+//     do()
+// }
+// 输出结果： defer close book.txt err close ./another-book.txt: file already closed
+
+// 当延迟函数执行时，只有最后一个变量会被用到，因此，f 变量 会成为最后那个资源 (another-book.txt)。而且两个 defer 都会将这个资源作为最后的资源来关闭
+
+// 解决方案：
+
+// package main
+
+// import (
+//     "fmt"
+//     "io"
+//     "os"
+// )
+
+// func do() error {
+//     f, err := os.Open("book.txt")
+//     if err != nil {
+//         return err
+//     }
+//     if f != nil {
+//         defer func(f io.Closer) {
+//             if err := f.Close(); err != nil {
+//                 fmt.Printf("defer close book.txt err %v\n", err)
+//             }
+//         }(f)
+//     }
+
+//     // ..code...
+
+//     f, err = os.Open("another-book.txt")
+//     if err != nil {
+//         return err
+//     }
+//     if f != nil {
+//         defer func(f io.Closer) {
+//             if err := f.Close(); err != nil {
+//                 fmt.Printf("defer close another-book.txt err %v\n", err)
+//             }
+//         }(f)
+//     }
+
+//     return nil
+// }
+
+// func main() {
+//     do()
+// }
