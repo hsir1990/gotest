@@ -1,92 +1,27 @@
 package main
 
 import (
-	"fmt"
+	_ "fmt"
 	_ "math/rand"
 	_ "runtime"
 	_ "time"
 )
 
-// // 面试题1
-// type student struct {
-// 	name string
-// 	age  int
-// }
-
-// // // 面试题2
-// type student struct {
-// 	id   int
-// 	name string
-// 	age  int
-// }
-
-// func demo(ce []student) {
-// 	//切片是引用传递，是可以改变值的
-// 	ce[1].age = 999
-// 	// ce = append(ce, student{3, "xiaowang", 56})
-// 	// return ce
-// }
-// //面试题3
-// type People interface {
-//     Speak(string) string
-// }
-
-// type Student struct{}
-
-// func (stu *Stduent) Speak(think string) (talk string) {
-//     if think == "sb" {
-//         talk = "你是个大帅比"
-//     } else {
-//         talk = "您好"
-//     }
-//     return
-// }
-// // 面试8Goroutine池
-// type Job struct {
-//     // id
-//     Id int
-//     // 需要计算的随机数
-//     RandNum int
-// }
-
-// type Result struct {
-//     // 这里必须传对象实例
-//     job *Job
-//     // 求和
-//     sum int
-// }
-
-// // 创建工作池
-// // 参数1：开几个协程
-// func createPool(num int, jobChan chan *Job, resultChan chan *Result) {
-//     // 根据开协程个数，去跑运行
-//     for i := 0; i < num; i++ {
-//         go func(jobChan chan *Job, resultChan chan *Result) {
-//             // 执行运算
-//             // 遍历job管道所有数据，进行相加
-//             for job := range jobChan {
-//                 // 随机数接过来
-//                 r_num := job.RandNum
-//                 // 随机数每一位相加
-//                 // 定义返回值
-//                 var sum int
-//                 for r_num != 0 {
-//                     tmp := r_num % 10
-//                     sum += tmp
-//                     r_num /= 10
-//                 }
-//                 // 想要的结果是Result
-//                 r := &Result{
-//                     job: job,
-//                     sum: sum,
-//                 }
-//                 //运算结果扔到管道
-//                 resultChan <- r
-//             }
-//         }(jobChan, resultChan)
-//     }
-// }
 func main() {
+	// //面试11
+	// type A struct {
+	// 	Num int
+	// }
+	// type B struct {
+	// 	Num int
+	// }
+	// var a A
+	// var b B
+	// // fmt.Println(a == b) //不能做比较  报错invalid operation: a == b (mismatched types A and B)  // A和B不是一个类型
+
+	// a = A(b) // ? 可以转换，但是有要求，就是结构体的的字段要完全一样(包括:名字、个数和类型！)
+	// fmt.Println(a, b)
+
 	// 	//面试10 select
 	// 	// 创建2个管道
 	// 	int_chan := make(chan int, 1)
@@ -380,3 +315,83 @@ func main() {
 	// // new goroutine: i = 3
 
 }
+
+// // 面试题1
+// type student struct {
+// 	name string
+// 	age  int
+// }
+
+// // // 面试题2
+// type student struct {
+// 	id   int
+// 	name string
+// 	age  int
+// }
+
+// func demo(ce []student) {
+// 	//切片是引用传递，是可以改变值的
+// 	ce[1].age = 999
+// 	// ce = append(ce, student{3, "xiaowang", 56})
+// 	// return ce
+// }
+// //面试题3
+// type People interface {
+//     Speak(string) string
+// }
+
+// type Student struct{}
+
+// func (stu *Stduent) Speak(think string) (talk string) {
+//     if think == "sb" {
+//         talk = "你是个大帅比"
+//     } else {
+//         talk = "您好"
+//     }
+//     return
+// }
+// // 面试8Goroutine池
+// type Job struct {
+//     // id
+//     Id int
+//     // 需要计算的随机数
+//     RandNum int
+// }
+
+// type Result struct {
+//     // 这里必须传对象实例
+//     job *Job
+//     // 求和
+//     sum int
+// }
+
+// // 创建工作池
+// // 参数1：开几个协程
+// func createPool(num int, jobChan chan *Job, resultChan chan *Result) {
+//     // 根据开协程个数，去跑运行
+//     for i := 0; i < num; i++ {
+//         go func(jobChan chan *Job, resultChan chan *Result) {
+//             // 执行运算
+//             // 遍历job管道所有数据，进行相加
+//             for job := range jobChan {
+//                 // 随机数接过来
+//                 r_num := job.RandNum
+//                 // 随机数每一位相加
+//                 // 定义返回值
+//                 var sum int
+//                 for r_num != 0 {
+//                     tmp := r_num % 10
+//                     sum += tmp
+//                     r_num /= 10
+//                 }
+//                 // 想要的结果是Result
+//                 r := &Result{
+//                     job: job,
+//                     sum: sum,
+//                 }
+//                 //运算结果扔到管道
+//                 resultChan <- r
+//             }
+//         }(jobChan, resultChan)
+//     }
+// }

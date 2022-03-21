@@ -2,7 +2,21 @@
 组合模式统一对象和对象集，使得使用相同接口使用对象和对象集。
 
 组合模式常用于树状结构，用于统一叶子节点和树节点的访问，并且可以用于应用某一操作到所有子节点。
+//iota是golang语言的常量计数器,只能在常量的表达式中使用。
+// 1、iota只能在常量的表达式中使用。
 
+// fmt.Println(iota) 
+// 编译错误： undefined: iota
+
+ 
+
+// 2、每次 const 出现时，都会让 iota 初始化为0.
+
+// const a = iota // a=0
+// const (
+//   b = iota     //b=0
+//   c            //c=1
+// )
 composite.go
 package composite
 

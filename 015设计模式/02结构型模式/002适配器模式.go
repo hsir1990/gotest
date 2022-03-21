@@ -5,6 +5,12 @@
 
 在Adapter中匿名组合Adaptee接口，所以Adapter类也拥有SpecificRequest实例方法，又因为Go语言中非入侵式接口特征，其实Adapter也适配Adaptee接口。
 
+// adapter
+// 英 [əˈdæptə]   美 [əˈdæptər]  
+// n.
+// (电器设备的)转接器，适配器;改编者;改写者
+
+
 adapter.go
 package adapter
 

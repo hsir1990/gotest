@@ -2,6 +2,10 @@
 API 为facade 模块的外观接口，大部分代码使用此接口简化对facade类的访问。
 
 facade模块同时暴露了a和b 两个Module 的NewXXX和interface，其它代码如果需要使用细节功能时可以直接调用。
+// facade
+// 英 [fəˈsɑːd]   美 [fəˈsɑːd]  
+// n.
+// 外观;(建筑物的)正面，立面;(虚假的)表面，外表
 
 facade.go
 package facade
@@ -15,6 +19,7 @@ func NewAPI() API {
     }
 }
 
+// API是facade包的facade接口
 //API is facade interface of facade package
 type API interface {
     Test() string

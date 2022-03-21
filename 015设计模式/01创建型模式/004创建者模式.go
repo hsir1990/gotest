@@ -12,7 +12,7 @@ type Builder interface {
 }
 
 type Director struct {
-    builder Builder
+    builder Builder  //下面的Builder1 使用的Builder接口，所以能转换到这用
 }
 
 // NewDirector ...
