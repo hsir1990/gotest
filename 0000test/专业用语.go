@@ -32,3 +32,16 @@ gRPC (gRPC Remote Procedure Calls) 是 Google 发起的一个开源远程过程�
 
 镜像（Mirroring）是一种文件存储形式，是冗余的一种类型，一个磁盘上的数据在另一个磁盘上存在一个完全相同的副本即为镜像。可以把许多文件做成一个镜像文件，与GHOST等程序放在一个盘里用GHOST等软件打开后，又恢复成许多文件，RAID 1和RAID 10使用的就是镜像。常见的镜像文件格式有ISO、BIN、IMG、TAO、DAO、CIF、FCD。
 所谓镜像文件其实和ZIP压缩包类似，它将特定的一系列文件按照一定的格式制作成单一的文件，以方便用户下载和使用，例如一个测试版的操作系统、游戏等。镜像文件不仅具有ZIP压缩包的“合成”功能，它最重要的特点是可以被特定的软件识别并可直接刻录到光盘上。其实通常意义上的镜像文件可以再扩展一下，在镜像文件中可以包含更多的信息。比如说系统文件、引导文件、分区表信息等，这样镜像文件就可以包含一个分区甚至是一块硬盘的所有信息。使用这类镜像文件的经典软件就是Ghost，它同样具备刻录功能，不过它的刻录仅仅是将镜像文件本身保存在光盘上，而通常意义上的刻录软件都可以直接将支持的镜像文件所包含的内容刻录到光盘上。
+
+
+
+InnoDB，是MySQL的数据库引擎之一，现为MySQL的默认存储引擎，为MySQL AB发布binary的标准之一。InnoDB由Innobase Oy公司所开发，2006年五月时由甲骨文公司并购。与传统的ISAM与MyISAM相比，InnoDB的最大特色就是支持了ACID兼容的事务（Transaction）功能，类似于PostgreSQL。
+InnoDB采用双轨制授权，一个是GPL授权，另一个是专有软件授权。
+
+innodb代表的是mysql的存储引擎，可以使用innodb作为存储心情
+
+数据库模式定义语言DDL(Data Definition Language)，是用于描述数据库中要存储的现实世界实体的语言。
+
+MDL是MicroStation的“应用引擎(Application Engine)”，MDL可以直接在MicroStation中运行并且表现为MicroStation本身的一部分。许多MicroStation的命令都可以在MDL中应用。
+
+MDL锁属于表级别的元数据锁----MDL(metadata lock)的锁
