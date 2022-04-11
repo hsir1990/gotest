@@ -45,6 +45,9 @@ func main() {
 	http.HandleFunc("/takeOrder", controller.TakeOrder)
 
 	////获取SSL 证书和 RSA 私钥
+	// 使用https协议时一般需要两个文件，cert.pem和key.pem
+	// cert.pem文件是ssl证书，而key.pem是私钥
+	// 可以使用Go标准库中的crypto包群来生成证书与私钥
 	//utils.GetTLS("utils/pem/cert.pem","utils/pem/key.pem")
 
 	//捕获没有的路由
