@@ -16,6 +16,28 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	username := r.PostFormValue("username")
 	success, uid, err := dao.Login(username,
 		r.PostFormValue("password"))
+
+	// 		//根据用户名查询、验证密码
+	// func Login(username string ,password string) (b bool ,uid int,err error)  {
+	// 	sqlStr := "select id,password  from users where username = ? "
+	// 	pwd := " "
+	// 	b = false
+
+	// 	err  = utils.Db.QueryRow(sqlStr,username).Scan(&uid,&pwd)
+	// 	if err != nil{
+	// 		return b ,0,err
+	// 	}else {
+	// 		//MD5加密后比较
+	// 		code := utils.Md5(password)
+	// 		if code == pwd {  //不区分大小比较
+	// 			b = true
+	// 		}else{
+	// 			return b,0,nil
+	// 		}
+	// 	}
+	// 	return b ,uid,nil
+	// }
+
 	if err != nil {
 		fmt.Println("登录处理出现错误，err：", err)
 	}

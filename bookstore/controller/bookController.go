@@ -172,6 +172,38 @@ func QueryPrice(w http.ResponseWriter, r *http.Request) {
 	high, _ = strconv.ParseFloat(max, 64)
 
 	pages, err := dao.QueryPrice(indexPage, low, high)
+
+	// // //查询图书价格范围
+	// func QueryPrice(IndexPage int64, low float64, high float64) (*model.Page, error) {
+	// 	//查询总记录
+	// 	sqlStr := "select count(*) from books where price between ? and ?"
+	// 	var pageSize int64 = 4
+
+	// 	pages, count, err := getPage(sqlStr, pageSize, low, high)
+	// 	if err != nil {
+	// 		fmt.Println("获取页数页码等出现异常，err:", err)
+	// 		return nil, err
+	// 	}
+
+	// 	sqlStr2 := "select id , title,author ,price ,sales ,stock ,img_path  from books where price between ? and ? limit ? ,?"
+	// 	books, err := getBooksForPage(sqlStr2, low, high, (IndexPage-1)*pageSize, pageSize)
+	// 	if err != nil {
+	// 		fmt.Println("获取图书集出现异常，err:", err)
+	// 		return nil, err
+	// 	}
+
+	// 	page := &model.Page{
+	// 		Books:     books,
+	// 		Pages:     pages,
+	// 		PageSize:  pageSize,
+	// 		IndexPage: IndexPage,
+	// 		Count:     count,
+	// 		MinPrice:  low,
+	// 		MaxPrice:  high,
+	// 	}
+	// 	return page, nil
+	// }
+
 	if err != nil {
 		fmt.Println("价格范围查询图书出现异常,err：", err)
 	}
