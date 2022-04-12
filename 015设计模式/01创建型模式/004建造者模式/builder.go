@@ -50,11 +50,11 @@ func (c *ConcreteBuilder) GetResult() Product {
 }
 
 func main() {
-	builder := NewConcreteBuilder()
-	director := NewDirector(&builder) //注入的是接口，所有要改成地址传入，不能用结构体
-	director.Construct()
+	builder := NewConcreteBuilder()   //创建一个ConcreteBuilder对象{built: false}
+	director := NewDirector(&builder) //注入的是接口，所有要改成地址传入，不能用结构体 //将这个对象注入到Director 并返回{builder: b}，b为最初的那个对象
+	director.Construct()              //通过Director的调用Construct方法驱动 b对像的方法使用，从而改变b对象里面的值
 
-	product := builder.GetResult()
+	product := builder.GetResult() //通过获取结果，把b对象的中属性传给product对象
 	fmt.Println(product.Built)
 	//true
 }

@@ -18,15 +18,15 @@ func (c *ConcretePrototype) Name() string {
 	return c.name
 }
 
-func (c *ConcretePrototype) Clone() Prototype {
+func (c *ConcretePrototype) Clone() Prototype { // 接口本身就是地址引用，所以不用再加指针符号
 	return &ConcretePrototype{name: c.name}
 }
 
 func main() {
 	name := "出去浪"
-	proto := ConcretePrototype{name: name}
-	newProto := proto.Clone()
-	actualName := newProto.Name()
+	proto := ConcretePrototype{name: name} //初始化一个结构体
+	newProto := proto.Clone()              //克隆一个自己出来，通过指针的方式返回给
+	actualName := newProto.Name()          //获取克隆出的对象的名字
 	// assert.Equal(t, name, actualName) // assert库，预期的名字和实际的名字作比较，是否相等，相等就通过了
 	fmt.Println(name)
 	fmt.Println(actualName)

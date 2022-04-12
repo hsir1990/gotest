@@ -28,6 +28,9 @@ func (p *PrototypeManager) Get(name string) Cloneable {
 func (p *PrototypeManager) Set(name string, prototype Cloneable) {
     p.prototypes[name] = prototype
 }
+
+
+
 prototype_test.go
 package prototype
 
@@ -53,6 +56,16 @@ func (t *Type2) Clone() Cloneable {
     return &tc
 }
 
+func init() {
+    manager = NewPrototypeManager()
+
+    t1 := &Type1{
+        name: "type1",
+    }
+    manager.Set("t1", t1)
+}
+
+
 func TestClone(t *testing.T) {
     t1 := manager.Get("t1")
 
@@ -73,11 +86,3 @@ func TestCloneFromManager(t *testing.T) {
 
 }
 
-func init() {
-    manager = NewPrototypeManager()
-
-    t1 := &Type1{
-        name: "type1",
-    }
-    manager.Set("t1", t1)
-}

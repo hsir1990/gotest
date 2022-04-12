@@ -80,6 +80,8 @@ func (*XMLDAOFactory) CreateOrderMainDAO() OrderMainDAO {
 func (*XMLDAOFactory) CreateOrderDetailDAO() OrderDetailDAO {
     return &XMLDetailDAO{}
 }
+
+
 abstractfactory_test.go
 package abstractfactory
 
