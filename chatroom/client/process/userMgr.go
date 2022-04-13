@@ -1,9 +1,9 @@
-package process 
-import (
-	"fmt"
-	"go_code/chatroom/common/message"
-	"go_code/chatroom/client/model"
+package process
 
+import (
+	"chatroom/client/model"
+	"chatroom/common/message"
+	"fmt"
 )
 
 //客户端要维护的map
@@ -14,7 +14,7 @@ var CurUser model.CurUser //我们在用户登录成功后，完成对CurUser初
 func outputOnlineUser() {
 	//遍历一把 onlineUsers
 	fmt.Println("当前在线用户列表:")
-	for id, _ := range onlineUsers{
+	for id, _ := range onlineUsers {
 		//如果不显示自己.
 		fmt.Println("用户id:\t", id)
 	}
@@ -27,7 +27,7 @@ func updateUserStatus(notifyUserStatusMes *message.NotifyUserStatusMes) {
 	user, ok := onlineUsers[notifyUserStatusMes.UserId]
 	if !ok { //原来没有
 		user = &message.User{
-			UserId : notifyUserStatusMes.UserId,
+			UserId: notifyUserStatusMes.UserId,
 		}
 	}
 	user.UserStatus = notifyUserStatusMes.Status

@@ -1,4 +1,5 @@
 package main
+
 import (
 	"fmt"
 	"os"
@@ -24,18 +25,22 @@ func main() {
 
 		fmt.Scanf("%d\n", &key)
 		switch key {
-			case 1 :
-				fmt.Println("登陆聊天室")
-				loop = false
-			case 2 :
-				fmt.Println("注册用户")
-				loop = false
-			case 3 :
-				fmt.Println("退出系统")
-				//loop = false
-				os.Exit(0)
-			default :
-				fmt.Println("你的输入有误，请重新输入")
+		case 1:
+			fmt.Println("登陆聊天室")
+			loop = false
+		case 2:
+			fmt.Println("注册用户")
+			loop = false
+		case 3:
+			fmt.Println("退出系统")
+			//loop = false
+			os.Exit(0)
+			//os是操作系统的意思
+			// 			func Exit
+			// func Exit(code int)
+			// Exit让当前程序以给出的状态码code退出。一般来说，状态码0表示成功，非0表示出错。程序会立刻终止，defer的函数不会被执行。
+		default:
+			fmt.Println("你的输入有误，请重新输入")
 		}
 
 	}
@@ -47,7 +52,9 @@ func main() {
 		fmt.Println("请输入用户的密码")
 		fmt.Scanf("%s\n", &userPwd)
 		//先把登陆的函数，写到另外一个文件， 比如login.go
-		login(userId, userPwd)
+		login(userId, userPwd) //  这样运行go run ./server/main/*.go才能把所有的加载进入，使用mod在mod所在的文件夹下开始引用路径就好了
+		//开头这样小写，编译的时候也能使用
+		// err := login(userId, userPwd)
 		// if err != nil {
 		// 	fmt.Println("登录失败")
 		// } else {

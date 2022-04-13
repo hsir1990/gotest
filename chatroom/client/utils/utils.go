@@ -1,19 +1,19 @@
 package utils
+
 import (
-	"fmt"
-	"net"
-	"go_code/chatroom/common/message"
+	"chatroom/common/message"
 	"encoding/binary"
 	"encoding/json"
+	"fmt"
+	"net"
 )
 
 //这里将这些方法关联到结构体中
 type Transfer struct {
 	//分析它应该有哪些字段
 	Conn net.Conn
-	Buf [8096]byte //这时传输时，使用缓冲
+	Buf  [8096]byte //这时传输时，使用缓冲
 }
-
 
 func (this *Transfer) ReadPkg() (mes message.Message, err error) {
 
@@ -33,38 +33,37 @@ func (this *Transfer) ReadPkg() (mes message.Message, err error) {
 	n, err := this.Conn.Read(this.Buf[:pkgLen])
 	if n != int(pkgLen) || err != nil {
 		//err = errors.New("read pkg body error")
-		return 
+		return
 	}
 	//把pkgLen 反序列化成 -> message.Message
 	// 技术就是一层窗户纸 &mes！！
 	err = json.Unmarshal(this.Buf[:pkgLen], &mes)
 	if err != nil {
 		fmt.Println("json.Unmarsha err=", err)
-		return 
+		return
 	}
-	return 
+	return
 }
-
 
 func (this *Transfer) WritePkg(data []byte) (err error) {
 
 	//先发送一个长度给对方
 	var pkgLen uint32
-	pkgLen = uint32(len(data)) 
+	pkgLen = uint32(len(data))
 	//var buf [4]byte
 	binary.BigEndian.PutUint32(this.Buf[0:4], pkgLen)
 	// 发送长度
 	n, err := this.Conn.Write(this.Buf[:4])
 	if n != 4 || err != nil {
 		fmt.Println("conn.Write(bytes) fail", err)
-		return 
+		return
 	}
 
 	//发送data本身
 	n, err = this.Conn.Write(data)
 	if n != int(pkgLen) || err != nil {
 		fmt.Println("conn.Write(bytes) fail", err)
-		return 
+		return
 	}
-	return 
+	return
 }
