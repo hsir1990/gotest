@@ -42,6 +42,7 @@ func (this *Processor) process3() (err error) {
 
 }
 
+////创建mvc结构将总控拆分成多个控制,创建process2文件下的控制
 //编写一个ServerProcessMes 函数
 //功能：根据客户端发送消息种类不同，决定调用哪个函数来处理
 func (this *Processor) serverProcessMes(mes *message.Message) (err error) {

@@ -19,18 +19,18 @@ func readPkg(conn net.Conn) (mes message.Message, err error) {
 		//err = errors.New("read pkg header error")
 		return
 	}
-	//根据buf[:4] 转成一个 uint32类型
+	//根据buf[:4] 反转成一个 uint32类型
 	var pkgLen uint32
 	pkgLen = binary.BigEndian.Uint32(buf[0:4])
 	//根据 pkgLen 读取消息内容
-	n, err := conn.Read(buf[:pkgLen])
+	n, err := conn.Read(buf[:pkgLen]) //从套接字conn读到buf中去//切片的长度是你传过来的长度
 	if n != int(pkgLen) || err != nil {
 		//err = errors.New("read pkg body error")
 		return
 	}
 	//把pkgLen 反序列化成 -> message.Message
 	// 技术就是一层窗户纸 &mes！！
-	err = json.Unmarshal(buf[:pkgLen], &mes)
+	err = json.Unmarshal(buf[:pkgLen], &mes) //注意使用指针，这样就不是空的了
 	if err != nil {
 		fmt.Println("json.Unmarsha err=", err)
 		return

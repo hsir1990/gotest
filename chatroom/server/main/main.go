@@ -1,5 +1,6 @@
 package main
 
+////创建mvc结构将总控拆分成多个控制,创建process2文件下的控制
 import (
 	"chatroom/server/model"
 	"fmt"
@@ -148,7 +149,7 @@ func main() {
 
 	//提示信息
 	fmt.Println("服务器[新的结构]在8889端口监听....")
-	listen, err := net.Listen("tcp", "0.0.0.0:8889")
+	listen, err := net.Listen("tcp", "0.0.0.0:8889") //本地监听8889
 	defer listen.Close()
 	if err != nil {
 		fmt.Println("net.Listen err=", err)
@@ -157,7 +158,7 @@ func main() {
 	//一旦监听成功，就等待客户端来链接服务器
 	for {
 		fmt.Println("等待客户端来链接服务器.....")
-		conn, err := listen.Accept()
+		conn, err := listen.Accept() //连接接收
 		if err != nil {
 			fmt.Println("listen.Accept err=", err)
 		}
@@ -168,7 +169,7 @@ func main() {
 }
 
 //处理和客户端的通讯
-func process(conn net.Conn) {
+func process(conn net.Conn) { //net.Conn 套接字的意思
 	//这里需要延时关闭conn
 	defer conn.Close() //Conn接口代表通用的面向流的网络连接。多个线程可能会同时调用同一个Conn的方法。
 

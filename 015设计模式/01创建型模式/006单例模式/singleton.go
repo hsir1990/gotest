@@ -9,10 +9,11 @@ import (
 
 var (
 	p    *Pet
-	once sync.Once
+	once sync.Once //Once是只执行一次动作的对象。例子可见下面
 )
 
 func init() {
+	//Do方法当且仅当第一次被调用时才执行括号里面的函数
 	once.Do(func() { //保证程序初始级别，就运行的函数
 		p = &Pet{}
 	})
@@ -25,12 +26,12 @@ func GetInstance() *Pet {
 type Pet struct {
 	name string
 	age  int
-	mux  sync.Mutex
+	mux  sync.Mutex //定义加互斥锁
 }
 
 func (p *Pet) SetName(n string) {
-	p.mux.Lock()
-	defer p.mux.Unlock()
+	p.mux.Lock()         //加互斥锁
+	defer p.mux.Unlock() //直到解锁才解开
 	p.name = n
 }
 
@@ -62,21 +63,21 @@ func IncrementAge2() {
 	p.IncrementAge()
 }
 func main() {
-	wg := sync.WaitGroup{}
-	wg.Add(200)
+	wg := sync.WaitGroup{} //用于等待一组线程的结束。父线程调用Add方法来设定应等待的线程的数量。每个被等待的线程在结束时应调用Done方法。同时，主线程里可以调用Wait方法阻塞至所有线程结束。
+	wg.Add(200)            //加200个线程数量
 
 	for i := 0; i < 100; i++ {
 		go func() {
-			defer wg.Done()
+			defer wg.Done() //执行减100次
 			IncrementAge()
 		}()
 
 		go func() {
-			defer wg.Done()
+			defer wg.Done() //执行减100次
 			IncrementAge2()
 		}()
 	}
-	wg.Wait()
+	wg.Wait() //一直堵塞着，直到所有线程结束才行
 	p := GetInstance()
 	age := p.GetAge()
 	fmt.Println(age) //200
@@ -109,3 +110,19 @@ func main() {
 // vt.
 // 举…为例
 // 第三人称单数： instances复数： instances现在分词： instancing过去式： instanced过去分词： instanced
+
+// //sync.Once的例子
+// var once sync.Once
+// onceBody := func() {
+//     fmt.Println("Only once")
+// }
+// done := make(chan bool)
+// for i := 0; i < 10; i++ {
+//     go func() {
+//         once.Do(onceBody)
+//         done <- true
+//     }()
+// }
+// for i := 0; i < 10; i++ {
+//     <-done
+// }

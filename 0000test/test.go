@@ -8,6 +8,10 @@ import (
 )
 
 func main() {
+	//面试13
+	// var myMap map[int]string
+	// //myMap = make(map[int]string, 10)//只有make以后才不报错
+	// myMap[0] = "golang"
 	// //面试11
 	// type A struct {
 	// 	Num int

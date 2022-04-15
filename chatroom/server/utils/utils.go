@@ -8,7 +8,7 @@ import (
 	"net"
 )
 
-//这里将这些方法关联到结构体中
+//这里将这些方法关联到结构体中   //可以这么定义，这里Buf相当于定义的数组
 type Transfer struct {
 	//分析它应该有哪些字段
 	Conn net.Conn
@@ -17,7 +17,7 @@ type Transfer struct {
 
 func (this *Transfer) ReadPkg() (mes message.Message, err error) {
 
-	//buf := make([]byte, 8096)
+	//buf := make([]byte, 8096)  //这是定义的切片
 	fmt.Println("读取客户端发送的数据...")
 	//conn.Read 在conn没有被关闭的情况下，才会阻塞
 	//如果客户端关闭了 conn 则，就不会阻塞
