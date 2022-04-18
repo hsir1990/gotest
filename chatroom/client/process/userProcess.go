@@ -75,7 +75,7 @@ func (this *UserProcess) Register(userId int,
 	err = json.Unmarshal([]byte(mes.Data), &registerResMes)
 	if registerResMes.Code == 200 {
 		fmt.Println("注册成功, 你重新登录一把")
-		os.Exit(0)
+		os.Exit(0) //退出
 	} else {
 		fmt.Println(registerResMes.Error)
 		os.Exit(0)

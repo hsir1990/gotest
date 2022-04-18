@@ -131,7 +131,7 @@ import (
 // 	 return
 // }
 
-func init() {
+func init() { //因为都是初始化，所以放在了main.go文文件中
 	//当服务器启动时，我们就去初始化我们的redis的连接池
 	initPool("39.103.175.224:6379", 16, 0, 300*time.Second)
 	initUserDao()

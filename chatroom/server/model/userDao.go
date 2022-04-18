@@ -8,6 +8,11 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
+//model ---- 数据的意思  //其实还有一个servers层，但是这个项目比较简单暂时没用，v层可以理解城市main.go,c层是process
+//dao ---- data access object  数据访问对象
+//编写对User对象（实例）操作的各种方法，主要是增删改查的操作
+//error.go设置一些自定义的错误
+
 //我们在服务器启动后，就初始化一个userDao实例，
 //把它做成全局的变量，在需要和redis操作时，就直接使用即可
 var (

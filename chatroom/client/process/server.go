@@ -43,7 +43,7 @@ func ShowMenu() {
 
 }
 
-//和服务器保持通讯
+//和服务器保持通讯   //服务器发消息给客户端叫做推送
 func serverProcessMes(conn net.Conn) {
 	//创建一个transfer实例, 不停的读取服务器发送的消息
 	tf := &utils.Transfer{
