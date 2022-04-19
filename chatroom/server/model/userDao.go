@@ -96,6 +96,7 @@ func (this *UserDao) Register(user *message.User) (err error) {
 	}
 	//入库
 	_, err = conn.Do("HSet", "users", user.UserId, string(data))
+	// _, err = conn.Do("Set", "users", "1111111")
 	if err != nil {
 		fmt.Println("保存注册用户错误 err=", err)
 		return
