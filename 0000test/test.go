@@ -4,111 +4,152 @@ import (
 	 "fmt"
 	_ "math/rand"
 	_ "runtime"
-	"time"
+	_ "time"
+	_ "runtime"
+	_ "sync"
 )
 
-//面试14
-//向 intChan放入 1-8000个数
-func putNum(intChan chan int) {
+// //面试14
+// //向 intChan放入 1-8000个数
+// func putNum(intChan chan int) {
 
-	for i := 1; i <= 80000; i++ {
-		intChan <- i
-	}
+// 	for i := 1; i <= 80000; i++ {
+// 		intChan <- i
+// 	}
 
-	//关闭intChan
-	close(intChan)
-}
-var ii int= 1
-// 从 intChan取出数据，并判断是否为素数,如果是，就
-// 	//放入到primeChan
-func primeNum(intChan chan int, primeChan chan int, exitChan chan bool) {
+// 	//关闭intChan
+// 	close(intChan)
+// }
+// var ii int= 1
+// // 从 intChan取出数据，并判断是否为素数,如果是，就
+// // 	//放入到primeChan
+// func primeNum(intChan chan int, primeChan chan int, exitChan chan bool) {
 
 
-	// for i:=0;i<5;i++{  //这么里面也被执行了8次
-	// 	fmt.Println("jjj+++",i)
-	// }
-	 iii := 1
-	//使用for 循环
+// 	// for i:=0;i<5;i++{  //这么里面也被执行了8次
+// 	// 	fmt.Println("jjj+++",i)
+// 	// }
+// 	 iii := 1
+// 	//使用for 循环
 	
-	// var num int
-	var flag bool //
-	for {  //因为这里面的循环是不限次数，而且取值是全局的变量，而且循环结束点是自己条件控制的，所以看不出来被执行了8次
-		ii++
-		iii++
-		// fmt.Println("ii++的值是++++----",ii)
-		// fmt.Println("iii++的值是++++----",iii)  //这样就能看出来了 //能看出这个被执行了8次
-		num, ok := <-intChan //intChan 取不到..
+// 	// var num int
+// 	var flag bool //
+// 	for {  //因为这里面的循环是不限次数，而且取值是全局的变量，而且循环结束点是自己条件控制的，所以看不出来被执行了8次
+// 		ii++
+// 		iii++
+// 		// fmt.Println("ii++的值是++++----",ii)
+// 		// fmt.Println("iii++的值是++++----",iii)  //这样就能看出来了 //能看出这个被执行了8次
+// 		num, ok := <-intChan //intChan 取不到..
 
-		if !ok {
-			break
-		}
-		flag = true //假设是素数
-		//判断num是不是素数
-		for i := 2; i < num; i++ {
-			if num%i == 0 { //说明该num不是素数
-				flag = false
-				break
-			}
-		}
+// 		if !ok {
+// 			break
+// 		}
+// 		flag = true //假设是素数
+// 		//判断num是不是素数
+// 		for i := 2; i < num; i++ {
+// 			if num%i == 0 { //说明该num不是素数
+// 				flag = false
+// 				break
+// 			}
+// 		}
 
-		if flag {
-			fmt.Println("素数", num)
-			//将这个数就放入到primeChan
-			primeChan <- num
-		}
-	}
+// 		if flag {
+// 			fmt.Println("素数", num)
+// 			//将这个数就放入到primeChan
+// 			primeChan <- num
+// 		}
+// 	}
 
 
-	fmt.Println("有一个primeNum 协程因为取不到数据，退出")  //因为有8个函数执行，所以回执行8次
-	fmt.Println("ii++的值是----",ii)
-	//这里我们还不能关闭 primeChan
-	//向 exitChan 写入true
-	exitChan <- true
+// 	fmt.Println("有一个primeNum 协程因为取不到数据，退出")  //因为有8个函数执行，所以回执行8次
+// 	fmt.Println("ii++的值是----",ii)
+// 	//这里我们还不能关闭 primeChan
+// 	//向 exitChan 写入true
+// 	exitChan <- true
 
+// }
+
+
+
+type People interface {
+	Show()
+}
+
+type Student struct{}
+
+func (stu *Student) Show() {
+
+}
+
+func live() People {
+	var stu *Student
+	return stu
 }
 
 func main() {
-	//面试14
-	intChan4 := make(chan int, 1000) //存放循环8000
-	primeChan := make(chan int, 20000) //放入结果
-	//标识退出的管道
-	exitChan1 := make(chan bool, 8) // 4个
-
-	start := time.Now().Unix()
-
-	//开启一个协程，向 intChan4放入 1-8000个数
-	go putNum(intChan4)
-	//开启4个协程，从 intChan4取出数据，并判断是否为素数,如果是，就
-	//放入到primeChan
-	for i := 0; i < 8; i++ {
-		go primeNum(intChan4, primeChan, exitChan1)
+	var peo People
+	fmt.Printf("%T, %v\n",peo,peo)
+	if peo == nil {
+		fmt.Println("yes")
+	}else{
+		fmt.Println("no")
 	}
-
-	//这里我们主线程，进行处理
-	//直接
-	go func() {
-		for i := 0; i < 8; i++ {
-			<-exitChan1
-		}
-
-		end := time.Now().Unix()
-		fmt.Println("使用协程耗时=", end-start)
-
-		//当我们从exitChan1 取出了4个结果，就可以放心的关闭 prprimeChan
-		close(primeChan)
-	}()
-
-	//遍历我们的 primeChan ,把结果取出
-	for {
-		_, ok := <-primeChan
-		if !ok {
-			break
-		}
-		//将结果输出
-		//fmt.Printf("素数=%d\n", res)
+	var stu1 *Student  //这个地方使用指针，才能通过
+	var peo1 People = stu1
+	fmt.Printf("%T, %v\n",peo1,peo1)
+	if peo1 == nil {
+		fmt.Println("yes")
+	}else{
+		fmt.Println("no")
 	}
+	
+	if live() == nil {
+		fmt.Println("AAAAAAA")
+	} else {
+		fmt.Println("BBBBBBB")
+	}
+	
+	// //面试14
+	// intChan4 := make(chan int, 1000) //存放循环8000
+	// primeChan := make(chan int, 20000) //放入结果
+	// //标识退出的管道
+	// exitChan1 := make(chan bool, 8) // 4个
 
-	fmt.Println("main线程退出")
+	// start := time.Now().Unix()
+
+	// //开启一个协程，向 intChan4放入 1-8000个数
+	// go putNum(intChan4)
+	// //开启4个协程，从 intChan4取出数据，并判断是否为素数,如果是，就
+	// //放入到primeChan
+	// for i := 0; i < 8; i++ {
+	// 	go primeNum(intChan4, primeChan, exitChan1)
+	// }
+
+	// //这里我们主线程，进行处理
+	// //直接
+	// go func() {
+	// 	for i := 0; i < 8; i++ {
+	// 		<-exitChan1
+	// 	}
+
+	// 	end := time.Now().Unix()
+	// 	fmt.Println("使用协程耗时=", end-start)
+
+	// 	//当我们从exitChan1 取出了4个结果，就可以放心的关闭 prprimeChan
+	// 	close(primeChan)
+	// }()
+
+	// //遍历我们的 primeChan ,把结果取出
+	// for {
+	// 	_, ok := <-primeChan
+	// 	if !ok {
+	// 		break
+	// 	}
+	// 	//将结果输出
+	// 	//fmt.Printf("素数=%d\n", res)
+	// }
+
+	// fmt.Println("main线程退出")
 	//面试13
 	// var myMap map[int]string
 	// //myMap = make(map[int]string, 10)//只有make以后才不报错
