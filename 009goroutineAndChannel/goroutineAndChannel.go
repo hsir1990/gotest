@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	myMap = make(map[int]int, 10)   //可以定义，也可以定义并且赋值
+	myMap = make(map[int]int, 10)   //可以定义，也可以定义并且赋值   //这个会被插入20次，因为下面的代码决定
 	//声明一个全局的互斥锁
 	//lock 是一个全局的互斥锁，
 	//sync 是包: synchornized 同步
